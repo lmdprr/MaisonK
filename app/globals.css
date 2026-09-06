@@ -455,11 +455,13 @@ input[type='range'].mk-slider::-moz-range-thumb {
   mask-image: linear-gradient(90deg, transparent, #000 30%), linear-gradient(180deg, transparent, #000 10%, #000 90%, transparent);
   mask-composite: intersect;
 }
-/* Bande sous le titre sur mobile : centrée, fondue des deux côtés */
+/* Bande sous le titre sur mobile : une seule rangée, calée en haut du
+   conteneur (haut d'une tuile), centrée et fondue sur les côtés seulement */
 @media (max-width: 767px) {
   [data-pop] {
     justify-content: center;
-    mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent), linear-gradient(180deg, transparent, #000 15%, #000 85%, transparent);
+    align-content: start;
+    mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
   }
 }
 [data-pop] [data-tile] {
