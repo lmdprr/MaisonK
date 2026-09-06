@@ -14,7 +14,9 @@ modules:
       lien: {}
       fond: rose
       visuel:
-        discriminant: aucun
+        discriminant: motif
+        value:
+          jeu: atelier
       afficher_contact: false
   - discriminant: prestations
     value:

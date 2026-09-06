@@ -17,12 +17,12 @@ type Props = ModuleIntro & { level: 1 | 2; coordonnees: Coordonnees | null }
  *
  * Disposition, choisie par le contenu :
  * - visuel `aucun` + contenu : titre en colonne gauche, contenu en colonne
- *   droite calé sur le bas du titre (Prestations) ;
+ *   droite calé sur le bas du titre ;
  * - visuel `aucun` sans contenu : titre seul, sur les deux colonnes s'il n'a
  *   pas de partie italique ;
  * - visuel `motif` : titre en colonne gauche, papier peint pop en colonne
- *   droite, à la hauteur du titre (Réalisations). Le contenu éventuel passe
- *   sous le titre ;
+ *   droite, à la hauteur du titre (Prestations en jeu atelier, Réalisations
+ *   en jeu mobilier). Le contenu éventuel passe sous le titre ;
  * - sans `titre_accent`, le titre n'est plus plafonné en largeur ;
  * - visuel `image` / `portrait` : deux colonnes, l'image du côté choisi. Le
  *   portrait ajoute le fond bordeaux et le motif floral.
@@ -112,10 +112,12 @@ export default function Intro({
           <>
             <div>{texte}</div>
             {/* Le papier peint occupe la colonne droite, dans les gouttières,
-                sur environ trois rangs de tuiles ; sur mobile, une bande pleine
-                largeur sous le titre. */}
-            <div className="relative -mx-gutter h-[clamp(150px,40vw,220px)] md:mx-0 md:h-[clamp(240px,25vw,360px)]">
-              <PopWallpaper className="absolute inset-0" />
+                sur environ trois rangs de tuiles ; sur mobile, une seule rangée
+                pleine largeur sous le titre et son texte (hauteur = une tuile,
+                même formule que `--tile` dans globals.css), pour ne pas
+                repousser les projets sous le pli. */}
+            <div className="relative -mx-gutter h-[clamp(60px,7.2vw,108px)] md:mx-0 md:h-[clamp(240px,25vw,360px)]">
+              <PopWallpaper jeu={visuel.discriminant === 'motif' ? visuel.value.jeu : 'mobilier'} className="absolute inset-0" />
             </div>
           </>
         ) : image ? (

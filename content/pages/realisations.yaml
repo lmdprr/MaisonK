@@ -10,11 +10,13 @@ modules:
     value:
       eyebrow: Réalisations
       icone: cadre
-      titre: Le potentiel projeté, puis révélé.
+      titre: Le potentiel projeté, puis révélé
       lien: {}
-      fond: creme
+      fond: rose
       visuel:
         discriminant: motif
+        value:
+          jeu: mobilier
       afficher_contact: false
   - discriminant: galerie
     value:

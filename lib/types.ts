@@ -74,10 +74,13 @@ export interface VisuelImage {
   position: PositionImage
 }
 
+/** Vocabulaire du papier peint pop : ce qui a été livré, ou les outils de ce qui est proposé. */
+export type JeuMotif = 'mobilier' | 'atelier'
+
 export type IntroVisuel =
   | { discriminant: 'aucun'; value: null }
   /** Papier peint pop dessiné par le code, sur la moitié droite. */
-  | { discriminant: 'motif'; value: null }
+  | { discriminant: 'motif'; value: { jeu: JeuMotif } }
   | { discriminant: 'image'; value: VisuelImage }
   | { discriminant: 'portrait'; value: VisuelImage }
 

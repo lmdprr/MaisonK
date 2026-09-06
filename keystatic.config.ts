@@ -214,7 +214,17 @@ const modules = fields.blocks(
           }),
           {
             aucun: fields.empty(),
-            motif: fields.empty(),
+            motif: fields.object({
+              jeu: fields.select({
+                label: "Jeu d'objets",
+                description: 'Mobilier : ce qui a été livré (Réalisations). Atelier : les outils de ce qui est proposé (Prestations).',
+                options: [
+                  { label: 'Mobilier', value: 'mobilier' },
+                  { label: 'Atelier', value: 'atelier' },
+                ],
+                defaultValue: 'mobilier',
+              }),
+            }),
             image: fields.object({
               image: imageRequise('Image', 'intro'),
               alt: fields.text({ label: 'Texte alternatif' }),

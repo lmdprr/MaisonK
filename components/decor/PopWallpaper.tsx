@@ -18,6 +18,7 @@
  */
 
 import type { CSSProperties } from 'react'
+import type { JeuMotif } from '@/lib/types'
 import { FLOWER } from './sketch-data'
 
 interface Shape {
@@ -41,8 +42,6 @@ interface Shape {
  * - Un objet se lit en une seconde à 60 px, sur les six palettes : la découpe
  *   doit rester visible sur la tuile bordeaux comme sur la tuile sable.
  */
-export type Jeu = 'mobilier' | 'atelier'
-
 type Vocabulaire = Record<string, Shape[]>
 
 /*
@@ -200,7 +199,7 @@ const ATELIER: Vocabulaire = {
   fleur: [{ d: FLOWER }],
 }
 
-const JEUX: Record<Jeu, Vocabulaire> = { mobilier: MOBILIER, atelier: ATELIER }
+const JEUX: Record<JeuMotif, Vocabulaire> = { mobilier: MOBILIER, atelier: ATELIER }
 
 /** Fond de tuile, encre de la silhouette, seconde couleur. Palette de la charte. */
 const PALETTES: [string, string, string][] = [
@@ -232,7 +231,7 @@ function Face({ shapes, palette, back }: { shapes: Shape[]; palette: number; bac
  * les cinq tuiles, pour qu'aucune colonne ne répète sa voisine. Le pas 7 est
  * premier avec les onze objets hors fleur de chaque jeu : tous apparaissent.
  */
-export default function PopWallpaper({ jeu = 'mobilier', count = 60, className = '' }: { jeu?: Jeu; count?: number; className?: string }) {
+export default function PopWallpaper({ jeu = 'mobilier', count = 60, className = '' }: { jeu?: JeuMotif; count?: number; className?: string }) {
   const objets = JEUX[jeu]
   const noms = Object.keys(objets)
   const n = noms.length - 1
