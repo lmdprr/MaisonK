@@ -13,10 +13,10 @@ type Props = ModuleGalerie & { level: 1 | 2; coordonnees: Coordonnees | null }
 /**
  * Semis de quadrilobes dans les marges laissées libres par le plafond `grid`
  * du comparateur avant / après (voir `--container-grid`). Uniquement au-dessus
- * de 1280 px : en dessous la marge est trop étroite et le semis chevaucherait
+ * de 1480 px : en dessous la marge est trop étroite et le semis chevaucherait
  * les images. La copie de droite est simplement retournée horizontalement.
  */
-const MARGE = 'pointer-events-none absolute inset-y-0 -z-10 hidden w-[calc((100%-var(--container-grid))/2)] max-h-[1400px] xl:block [mask-image:linear-gradient(#000_70%,transparent)]'
+const MARGE = 'pointer-events-none absolute inset-y-0 -z-10 hidden w-[calc((100%-var(--container-grid))/2)] max-h-[1400px] min-[1480px]:block [mask-image:linear-gradient(#000_70%,transparent)]'
 const marges = (
   <>
     <Wall variant="marge" className={`${MARGE} left-0`} />

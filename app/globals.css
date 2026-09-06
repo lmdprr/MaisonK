@@ -45,7 +45,7 @@
   --spacing-head: clamp(40px, 5vw, 72px);
   --radius-mk: 2px;
   /* Plafond des grilles d'images (module galerie), partagé avec ses marges décorées. */
-  --container-grid: 1000px;
+  --container-grid: 1200px;
 }
 
 /*
