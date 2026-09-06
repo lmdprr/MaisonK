@@ -7,6 +7,7 @@ import Heading from '@/components/ui/Heading'
 import Eyebrow from '@/components/ui/Eyebrow'
 import ArrowLink from '@/components/ui/ArrowLink'
 import Wall from '@/components/decor/Wall'
+import PopWallpaper from '@/components/decor/PopWallpaper'
 
 type Props = ModuleIntro & { level: 1 | 2; coordonnees: Coordonnees | null }
 
@@ -15,10 +16,14 @@ type Props = ModuleIntro & { level: 1 | 2; coordonnees: Coordonnees | null }
  * Composant serveur, aucun état.
  *
  * Disposition, choisie par le contenu :
- * - visuel `aucun` + contenu : contenu en colonne droite, aligné en bas (Prestations) ;
- * - visuel `aucun` sans contenu : titre seul (Réalisations) ;
- * - sans `titre_accent`, le titre s'étale sur toute la ligne ; en visuel
- *   `aucun` il prend les deux colonnes et le contenu passe dessous, à droite ;
+ * - visuel `aucun` + contenu : titre en colonne gauche, contenu en colonne
+ *   droite calé sur le bas du titre (Prestations) ;
+ * - visuel `aucun` sans contenu : titre seul, sur les deux colonnes s'il n'a
+ *   pas de partie italique ;
+ * - visuel `motif` : titre en colonne gauche, papier peint pop en colonne
+ *   droite, à la hauteur du titre (Réalisations). Le contenu éventuel passe
+ *   sous le titre ;
+ * - sans `titre_accent`, le titre n'est plus plafonné en largeur ;
  * - visuel `image` / `portrait` : deux colonnes, l'image du côté choisi. Le
  *   portrait ajoute le fond bordeaux et le motif floral.
  *
@@ -41,7 +46,8 @@ export default function Intro({
 }: Props) {
   const lienFleche = resolveLien(lien, coordonnees)
   const hasContenu = Array.isArray(contenu) && contenu.length > 0
-  const image = visuel.discriminant === 'aucun' ? null : visuel.value
+  const isMotif = visuel.discriminant === 'motif'
+  const image = visuel.discriminant === 'aucun' || isMotif ? null : visuel.value
   const isPortrait = visuel.discriminant === 'portrait'
   const imageLeft = image?.position === 'gauche'
   const document = contenu as Parameters<typeof DocumentRenderer>[0]['document']
@@ -61,7 +67,7 @@ export default function Intro({
           </>
         )}
       </Heading>
-      {hasContenu && image && (
+      {hasContenu && (image || isMotif) && (
         <div className="prose-mk lead mt-7">
           <DocumentRenderer document={document} />
         </div>
@@ -100,9 +106,19 @@ export default function Intro({
       {decor}
       <div
         data-visuel={visuel.discriminant}
-        className={`grid gap-[clamp(40px,6vw,96px)] md:grid-cols-2 ${afficher_contact ? 'md:items-start' : image ? 'md:items-center' : 'md:items-end'}`}
+        className={`grid gap-[clamp(40px,6vw,96px)] md:grid-cols-2 ${afficher_contact ? 'md:items-start' : image || isMotif ? 'md:items-center' : 'md:items-end'}`}
       >
-        {image ? (
+        {isMotif ? (
+          <>
+            <div>{texte}</div>
+            {/* Le papier peint occupe la colonne droite, dans les gouttières,
+                sur environ trois rangs de tuiles ; sur mobile, une bande pleine
+                largeur sous le titre. */}
+            <div className="relative -mx-gutter h-[clamp(150px,40vw,220px)] md:mx-0 md:h-[clamp(240px,25vw,360px)]">
+              <PopWallpaper className="absolute inset-0" />
+            </div>
+          </>
+        ) : image ? (
           <>
             <div className={`${imageLeft ? 'md:order-1' : 'md:order-2'} ${afficher_contact ? 'md:pt-[clamp(0px,4vw,60px)]' : ''}`}>
               <figure data-portrait={isPortrait} data-reveal="" className="relative mx-auto flex w-full max-w-[520px] flex-col gap-8">
@@ -138,9 +154,9 @@ export default function Intro({
           </>
         ) : (
           <>
-            <div className={titreSeul ? 'md:col-span-2' : ''}>{texte}</div>
+            <div className={titreSeul && !hasContenu ? 'md:col-span-2' : ''}>{texte}</div>
             {hasContenu && (
-              <div className={`prose-mk lead max-w-[48ch] md:self-end ${titreSeul ? 'md:col-start-2' : ''}`}>
+              <div className="prose-mk lead max-w-[48ch] md:self-end md:pb-[0.3em]">
                 <DocumentRenderer document={document} />
               </div>
             )}

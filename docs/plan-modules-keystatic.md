@@ -103,8 +103,12 @@ Carole (Accueil) · page Contact.
 
 `visuel` (conditionnel, l'admin n'affiche que les champs de la valeur choisie) :
 
-- `aucun` : si `contenu` est rempli, il passe en colonne droite alignée en bas
-  (en-tête Prestations) ; sinon titre seul (Réalisations) ;
+- `aucun` : si `contenu` est rempli, titre en colonne gauche et contenu en
+  colonne droite, calé sur le bas du titre (en-tête Prestations) ; sinon titre
+  seul sur toute la ligne ;
+- `motif` : titre à gauche, papier peint pop dessiné par le code dans la
+  colonne droite (en-tête Réalisations). Le contenu éventuel passe sous le
+  titre ;
 - `image` : image + position (gauche / droite). Contact utilise `droite` ;
 - `portrait` : image + position ; le motif floral et le fond bordeaux sont
   ajoutés par le code. Carole = gauche, À propos = droite.
@@ -284,6 +288,7 @@ Assignation du décor par module :
 | `intro` portrait en h2 | frise basse (`Wall edge`) |
 | `intro` portrait en h1 | médaillon d'angle (`Wall corner`) |
 | `intro` contact | semis (`Wall seed`) |
+| `intro` visuel motif | papier peint pop à tuiles retournables (`PopWallpaper`) |
 | `grille_points` cellules | papier peint par index (`Wallpaper`) |
 | `prestations` aperçu | fleur qui éclot (`BloomFlower`) |
 | `prestations` détail, encart `croquis_3d` | plan qui bascule (`PlanSketch`) |

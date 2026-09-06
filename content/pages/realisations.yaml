@@ -14,7 +14,7 @@ modules:
       lien: {}
       fond: creme
       visuel:
-        discriminant: aucun
+        discriminant: motif
       afficher_contact: false
   - discriminant: galerie
     value:

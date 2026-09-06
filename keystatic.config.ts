@@ -206,6 +206,7 @@ const modules = fields.blocks(
             label: 'Visuel',
             options: [
               { label: 'Aucun', value: 'aucun' },
+              { label: 'Motif (papier peint pop dessiné par le code)', value: 'motif' },
               { label: 'Image', value: 'image' },
               { label: 'Portrait (motif floral ajouté par le code)', value: 'portrait' },
             ],
@@ -213,6 +214,7 @@ const modules = fields.blocks(
           }),
           {
             aucun: fields.empty(),
+            motif: fields.empty(),
             image: fields.object({
               image: imageRequise('Image', 'intro'),
               alt: fields.text({ label: 'Texte alternatif' }),

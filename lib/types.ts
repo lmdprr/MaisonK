@@ -76,6 +76,8 @@ export interface VisuelImage {
 
 export type IntroVisuel =
   | { discriminant: 'aucun'; value: null }
+  /** Papier peint pop dessiné par le code, sur la moitié droite. */
+  | { discriminant: 'motif'; value: null }
   | { discriminant: 'image'; value: VisuelImage }
   | { discriminant: 'portrait'; value: VisuelImage }
 

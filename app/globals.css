@@ -433,6 +433,98 @@ input[type='range'].mk-slider::-moz-range-thumb {
   --mk-play: running;
 }
 
+/* ── Papier peint pop (PopWallpaper, en-tête `intro` en visuel « motif ») ──
+ *
+ * Grille de tuiles à deux faces. Trois couches de transformation, pour que les
+ * animations ne s'écrasent pas : la tuile éclot, `[data-spin]` se retourne
+ * lentement en boucle (phase tirée de `--d`, chaque tuile à son tour), et
+ * `[data-flip]` se retourne sous la souris. Les tuiles sont calées à droite :
+ * le débord, fondu par le masque, est du côté du titre.
+ */
+[data-pop] {
+  --tile: clamp(60px, 7.2vw, 108px);
+  --gap: clamp(8px, 1vw, 14px);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, var(--tile));
+  grid-auto-rows: var(--tile);
+  gap: var(--gap);
+  justify-content: end;
+  align-content: center;
+  overflow: hidden;
+  perspective: 1200px;
+  mask-image: linear-gradient(90deg, transparent, #000 30%), linear-gradient(180deg, transparent, #000 10%, #000 90%, transparent);
+  mask-composite: intersect;
+}
+/* Bande sous le titre sur mobile : centrée, fondue des deux côtés */
+@media (max-width: 767px) {
+  [data-pop] {
+    justify-content: center;
+    mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent), linear-gradient(180deg, transparent, #000 15%, #000 85%, transparent);
+  }
+}
+[data-pop] [data-tile] {
+  display: block;
+  transform-style: preserve-3d;
+  animation: mk-bloom 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) calc(var(--d) * 0.8s) both;
+  animation-play-state: var(--mk-play, paused);
+}
+[data-pop] [data-spin],
+[data-pop] [data-flip] {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+[data-pop] [data-spin] {
+  animation: mk-flip 40s cubic-bezier(0.65, 0, 0.35, 1) calc(var(--d) * -40s) infinite;
+  animation-play-state: var(--mk-play, paused);
+}
+[data-pop] [data-flip] {
+  transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+[data-pop] [data-face] {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 22%;
+  overflow: hidden;
+  backface-visibility: hidden;
+}
+[data-pop] [data-face] svg {
+  width: 72%;
+  height: 72%;
+}
+[data-pop] [data-face="back"] {
+  transform: rotateY(180deg);
+}
+@media (hover: hover) and (pointer: fine) {
+  [data-pop] [data-tile]:hover [data-flip] {
+    transform: rotateY(180deg) scale(1.08);
+  }
+}
+/* Tuile qui se retourne puis revient, une petite partie du cycle seulement */
+@keyframes mk-flip {
+  0%,
+  42% {
+    transform: rotateY(0);
+  }
+  50%,
+  92% {
+    transform: rotateY(180deg);
+  }
+  100% {
+    transform: rotateY(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-pop] [data-tile],
+  [data-pop] [data-spin] {
+    animation: none;
+  }
+}
+
 /* Le rouleau remplace le curseur sur les boutons, uniquement avec une vraie souris */
 @media (hover: hover) and (pointer: fine) {
   [data-paint]:hover {
