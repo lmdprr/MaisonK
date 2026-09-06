@@ -18,6 +18,10 @@
  *
  * Variables requises (voir .env.example) :
  *   R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET
+ *
+ * Si aucune des quatre n'est définie, le script se termine sans erreur : c'est
+ * le cas d'un déploiement sans R2 (images servies depuis /public), qui doit
+ * rester possible. Une configuration partielle, elle, est une erreur.
  */
 
 import { readdir, readFile, stat } from 'node:fs/promises'
@@ -41,6 +45,8 @@ const CONTENT_TYPES = {
   '.svg': 'image/svg+xml',
   '.webp': 'image/webp',
 }
+
+const R2_VARS = ['R2_ACCOUNT_ID', 'R2_ACCESS_KEY_ID', 'R2_SECRET_ACCESS_KEY', 'R2_BUCKET']
 
 function requireEnv(name) {
   const value = process.env[name]
@@ -71,6 +77,11 @@ async function walk(dir) {
 }
 
 async function main() {
+  if (R2_VARS.every((name) => !process.env[name])) {
+    console.log('R2 non configuré (aucune variable R2_*) : synchronisation ignorée, les images seront servies depuis /public.')
+    return
+  }
+
   const accountId = requireEnv('R2_ACCOUNT_ID')
   const bucket = requireEnv('R2_BUCKET')
   const client = new AwsClient({
