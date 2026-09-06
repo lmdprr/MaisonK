@@ -1,16 +1,36 @@
+/**
+ * Moteur de rendu des croquis au trait.
+ *
+ * Un croquis est une liste d'éléments (`sketch-data.ts`) : des traits qui se
+ * dessinent dans l'ordre de leurs délais, et des aplats teintés après coup.
+ * Le dessin repose sur `pathLength=1` + `stroke-dasharray` animé de 1 à 0,
+ * ce qui rend la durée indépendante de la longueur réelle du tracé.
+ *
+ * Toutes les animations sont en pause par défaut (`--mk-play: paused`) et
+ * proportionnelles à `--mk-dur` : DecorRuntime les lance à l'entrée dans
+ * l'écran et raccourcit la durée sur mobile.
+ */
+
 import type { CSSProperties, ReactNode } from 'react'
 import { isRect, type SketchItem, type SketchRect, type SketchStroke } from './sketch-data'
 
+/** Bordeaux et terracotta de la charte, en dur : les SVG ne lisent pas les tokens Tailwind. */
 const B = '#551020'
 const T = '#C07454'
 const PLAY = 'var(--mk-play,paused)'
 
-/** `name` sur une durée `dur` × --mk-dur, après un délai `delay` × --mk-dur. */
+/**
+ * Déclaration `animation` proportionnelle à `--mk-dur`.
+ *
+ * @param dur durée, en multiples de `--mk-dur`
+ * @param delay délai avant le départ, en multiples de `--mk-dur`
+ */
 export const anim = (name: string, dur: number, delay: number, ease = 'ease') =>
   `${name} calc(var(--mk-dur,1s) * ${dur}) ${ease} calc(var(--mk-dur,1s) * ${delay}) forwards`
 
 const vars = (style: Record<string, string | number>) => style as CSSProperties
 
+/** Trait qui se dessine, précédé si demandé d'un trait fantôme pointillé qui s'efface. */
 function Stroke({ item, index }: { item: SketchStroke; index: number }) {
   const delay = item.delay ?? 0
   const path = (
@@ -53,6 +73,7 @@ function Stroke({ item, index }: { item: SketchStroke; index: number }) {
   )
 }
 
+/** Aplat de couleur : net (balayage) ou gribouillé (zigzag de traits épais). */
 function Rect({ item }: { item: SketchRect }) {
   const [x, y, w, h] = item.rect
   const fill = item.fill ?? T
@@ -81,7 +102,9 @@ function Rect({ item }: { item: SketchRect }) {
     )
   }
 
-  // Gribouillage : zigzag de traits épais aux bords irréguliers
+  // Gribouillage : zigzag de traits épais, bords irréguliers par sinus pour
+  // ne pas avoir deux aplats identiques. Le tracé est déterministe (pas de
+  // Math.random) : le rendu serveur et le client doivent produire le même SVG.
   const rows = 9
   const step = h / rows
   let d = ''
@@ -130,10 +153,9 @@ interface SketchProps {
 }
 
 /**
- * Croquis au trait. Les animations restent en pause (`--mk-play: paused`)
- * jusqu'à ce que DecorRuntime passe l'ancêtre `[data-sketch]` à `running`
- * quand il entre dans l'écran. Le filtre crayon (#mk-pencil) est déclaré une
- * fois dans le layout du site.
+ * Croquis au trait complet (balise `svg`). L'appelant doit poser `data-sketch`
+ * sur un ancêtre pour que DecorRuntime lance l'animation. Le filtre crayon
+ * (`#mk-pencil`) est déclaré une fois dans le layout du site.
  */
 export default function Sketch({ viewBox, items, children, style, className }: SketchProps) {
   return (

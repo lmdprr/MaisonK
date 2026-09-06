@@ -1,3 +1,9 @@
+/**
+ * Croquis nommés du site, assemblés depuis la bibliothèque `sketch-data.ts`.
+ * Chacun pose son propre `data-sketch` : il s'anime dès qu'il entre dans
+ * l'écran, indépendamment de son conteneur.
+ */
+
 import type { Icone, TypePiece } from '@/lib/types'
 import Sketch, { MoveGroup, SketchItems, anim } from './Sketch'
 import { ICONS, PLAN_FLAT, ROOMS, SALON_BASE, SALON_FRAME, SALON_LAMP, SALON_RAYS } from './sketch-data'
@@ -24,8 +30,10 @@ export function RoomSketch({ kind, className = '' }: { kind: TypePiece; classNam
 }
 
 /**
- * Salon du hero : le mur se teinte, le cadre et la lampe glissent en place,
- * puis trois rayons se dessinent au-dessus de la lampe et rebondissent.
+ * Salon du hero. Séquence : canapé et plante se dessinent, le cadre et la
+ * lampe arrivent en glissant, le mur se teinte, puis trois rayons se dessinent
+ * au-dessus de la lampe et rebondissent. Les délais sont calés à la main dans
+ * `sketch-data.ts` et ici.
  */
 export function HeroSketch() {
   return (

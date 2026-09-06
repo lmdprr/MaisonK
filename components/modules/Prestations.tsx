@@ -12,9 +12,14 @@ type Props = ModulePrestations & { level: 1 | 2; coordonnees: Coordonnees | null
 
 /**
  * Liste depuis la collection Prestations. Deux rendus, même source :
- * `apercu` (accueil, lignes numérotées, fleur qui éclot dans le coin) et
- * `detail` (page Prestations, articles alternés avec icône croquis ; la planche
- * de teintes est un composant client, le plan 3D un croquis qui bascule).
+ * - `apercu` : accueil, lignes numérotées vers l'ancre de la prestation,
+ *   fleur qui éclot dans le coin ;
+ * - `detail` : page Prestations, articles alternés (image ou encart à gauche,
+ *   texte à droite, puis l'inverse) avec icône croquis, livrables et durée.
+ *
+ * En `detail`, l'encart d'une prestation peut remplacer l'image par la planche
+ * de teintes (composant client, colonne texte rendue sticky) ou ajouter le
+ * plan 3D animé sous le texte.
  */
 export default async function Prestations({ en_tete, affichage, prestations, fond, level, coordonnees }: Props) {
   const items = await getPrestations(prestations)
@@ -52,6 +57,7 @@ export default async function Prestations({ en_tete, affichage, prestations, fon
       <div className="flex flex-col">
         {items.map((p, index) => {
           const alt = index % 2 === 1
+          // La planche est haute : le texte reste visible pendant qu'on la compose.
           const sticky = p.encart === 'planche_teintes'
           return (
             <article

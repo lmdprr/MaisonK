@@ -78,9 +78,9 @@ export default function Intro({
     </div>
   )
 
-  // Décor assigné par variante : frise sous le bloc Carole (portrait en h2),
-  // médaillon dans le coin de l'en-tête À propos (portrait en h1), semis de
-  // fleurs derrière la page Contact.
+  // Décor assigné par variante, jamais par un champ : semis de fleurs derrière
+  // la page Contact, médaillon d'angle sur un portrait en tête de page
+  // (À propos), frise basse sur un portrait en cours de page (bloc Carole).
   const decor = afficher_contact ? (
     <Wall variant="seed" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" />
   ) : isPortrait && level === 1 ? (
@@ -106,6 +106,7 @@ export default function Intro({
           <>
             <div className={`${imageLeft ? 'md:order-1' : 'md:order-2'} ${afficher_contact ? 'md:pt-[clamp(0px,4vw,60px)]' : ''}`}>
               <figure data-portrait={isPortrait} data-reveal="" className="relative mx-auto flex w-full max-w-[520px] flex-col gap-8">
+                {/* Motif floral derrière le portrait, décalé du côté opposé au texte */}
                 {isPortrait && (
                   <span
                     aria-hidden="true"
@@ -150,7 +151,7 @@ export default function Intro({
   )
 }
 
-/** Cartes WhatsApp / téléphone / e-mail — page Contact. */
+/** Cartes WhatsApp / téléphone / e-mail de la page Contact, depuis Coordonnées. */
 function ContactCards({ coordonnees }: { coordonnees: Coordonnees | null }) {
   if (!coordonnees) return null
   const wa = whatsappUrl(coordonnees)
@@ -197,7 +198,7 @@ function ContactCards({ coordonnees }: { coordonnees: Coordonnees | null }) {
   )
 }
 
-/** Liste atelier / horaires / réseaux — sous l'image de la page Contact. */
+/** Liste atelier / horaires / réseaux, sous l'image de la page Contact. */
 function ContactInfos({ coordonnees }: { coordonnees: Coordonnees | null }) {
   if (!coordonnees) return null
   const dt = 'pt-[3px] text-[13px] uppercase tracking-[.14em] text-(--fg-muted)'

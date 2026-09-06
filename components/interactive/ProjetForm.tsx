@@ -31,16 +31,24 @@ export interface ProjetFormProps {
   recipientToken: string | null
 }
 
+/** Chip ajoutée en fin de liste pour les pièces et les ambiances ; ouvre un champ libre. */
 const AUTRE = 'Autre…'
+/** Côté max de la photo après redimensionnement. Suffit pour juger une pièce. */
 const PHOTO_MAX_PX = 1600
 const PHOTO_QUALITY = 0.82
 
 /**
- * Formulaire « Votre projet » : pièce (choix unique), ambiances (choix multiple
- * borné), photo redimensionnée dans le navigateur, coordonnées, planche de
- * teintes reprise du localStorage. L'envoi passe par la server action
- * `submitProjet` (Resend, photo en pièce jointe) ; la confirmation remplace le
- * formulaire sans changer de page.
+ * Formulaire « Votre projet », en quatre étapes sur une seule vue :
+ * pièce (choix unique), ambiances (choix multiple borné), photo facultative
+ * redimensionnée dans le navigateur, coordonnées. La planche de teintes est
+ * reprise du localStorage et peut être composée sur place.
+ *
+ * L'envoi passe par la server action `submitProjet` (Resend, photo en pièce
+ * jointe). La confirmation remplace le formulaire sans changer de page, pour
+ * garder le contexte de la colonne gauche.
+ *
+ * Pas de bibliothèque de formulaire : quatre champs libres et des chips, la
+ * validation native (`required`, `type=email`) suffit.
  */
 export default function ProjetForm(props: ProjetFormProps) {
   const { eyebrow, icone, titre, intro, level, pieces, ambiances, max_ambiances, photo_activee, label_envoi, note_envoi, confirmation, confirmationLien, pageSlug, recipientToken } = props
@@ -56,11 +64,13 @@ export default function ProjetForm(props: ProjetFormProps) {
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
+  /** Composeur de planche ouvert dans la colonne gauche. */
   const [boardEditing, setBoardEditing] = useState(false)
   const [sending, setSending] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [sent, setSent] = useState(false)
 
+  // L'aperçu est une URL blob : à libérer quand la photo change ou au démontage.
   useEffect(() => () => {
     if (photo) URL.revokeObjectURL(photo.preview)
   }, [photo])
@@ -89,6 +99,7 @@ export default function ProjetForm(props: ProjetFormProps) {
     setPhoto(null)
   }
 
+  // Valeurs envoyées : « Autre… » est remplacé par le texte saisi.
   const roomFinal = room === AUTRE ? roomOther.trim() : room
   const moodsFinal = moods.map((m) => (m === AUTRE ? moodOther.trim() : m)).filter(Boolean)
   const firstName = name.trim().split(/\s+/)[0] || ''
@@ -96,6 +107,8 @@ export default function ProjetForm(props: ProjetFormProps) {
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setError(null)
+    // Pas de jeton = FORM_TOKEN_SECRET absente au build. On ne tente pas
+    // l'envoi, l'action échouerait de toute façon.
     if (!recipientToken) {
       setError('Formulaire mal configuré : écrivez-moi directement sur WhatsApp ou par e-mail.')
       return
@@ -121,6 +134,8 @@ export default function ProjetForm(props: ProjetFormProps) {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  // Petits rendus locaux plutôt que des composants : ils dépendent de l'état
+  // du formulaire et n'ont pas d'usage ailleurs.
   const etape = (num: string, label: string, hint?: string) => (
     <p className="flex flex-wrap items-baseline gap-3">
       <span className="num">{num}</span>
@@ -148,7 +163,7 @@ export default function ProjetForm(props: ProjetFormProps) {
 
   return (
     <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] items-start gap-[clamp(40px,6vw,96px)]">
-      {/* Colonne gauche : intro + planche */}
+      {/* Colonne gauche, sticky : intro + planche (résumé, composeur ou invitation) */}
       <div className="md:sticky md:top-24">
         {eyebrow && <Eyebrow icone={icone} className="mb-[22px]">{eyebrow}</Eyebrow>}
         <Heading level={level} className="text-[clamp(40px,4.6vw,68px)] leading-[1.04]">
@@ -207,6 +222,7 @@ export default function ProjetForm(props: ProjetFormProps) {
         <div data-component="ProjetForm" data-state="success" className={`${card} gap-7`}>
           <p className="text-xs uppercase tracking-[.18em] text-(--fg-muted)">C’est noté</p>
           <h2 className="text-[clamp(28px,3vw,40px)] leading-[1.15]">
+            {/* `{prenom}` et l'espace qui le précède disparaissent ensemble si le prénom est vide */}
             {(confirmation.titre || 'Merci {prenom}, je prépare notre échange.').replace(/\s*\{prenom\}/g, firstName ? ` ${firstName}` : '')}
           </h2>
           <p className="lead max-w-[46ch] leading-[1.55]">
@@ -257,6 +273,7 @@ export default function ProjetForm(props: ProjetFormProps) {
           {photo_activee && (
             <fieldset className="flex flex-col gap-4">
               <legend className="contents">{etape('03', 'Une photo de la pièce', 'facultatif, un seul cliché suffit')}</legend>
+              {/* Zone de dépôt : l'input file invisible couvre tout le label, le glisser-déposer natif fonctionne */}
               <label className="relative flex min-h-[120px] cursor-pointer items-center justify-center overflow-hidden rounded-mk border border-dashed border-(--line-strong) bg-sable/35 p-[18px] text-center transition-colors duration-300 hover:border-bordeaux hover:bg-sable/60">
                 <input type="file" accept="image/*" onChange={(e) => onPhoto(e.target.files?.[0])} className="absolute inset-0 cursor-pointer opacity-0" />
                 {photo ? (
@@ -307,8 +324,12 @@ export default function ProjetForm(props: ProjetFormProps) {
 }
 
 /**
- * Réduit la photo à 1 600 px max et la ré-encode en JPEG : l'e-mail reste léger
- * et rien n'est stocké côté serveur. Retourne aussi le base64 sans préfixe.
+ * Réduit la photo à `PHOTO_MAX_PX` sur son plus grand côté et la ré-encode en
+ * JPEG : l'e-mail reste léger et rien n'est stocké côté serveur.
+ *
+ * `createImageBitmap` décode aussi les HEIC sur Safari, ce qu'un `<img>` ne
+ * ferait pas partout. Retourne le blob (pour l'aperçu) et le base64 sans
+ * préfixe `data:` (pour la pièce jointe).
  */
 async function resizeImage(file: File): Promise<{ blob: Blob; base64: string }> {
   const bitmap = await createImageBitmap(file)

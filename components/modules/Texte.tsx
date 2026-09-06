@@ -3,6 +3,7 @@ import type { ModuleTexte } from '@/lib/types'
 import Section from '@/components/ui/Section'
 import type { ContainerProps } from '@/components/ui/Container'
 
+/** Le champ `largeur` de l'admin parle en mots ; le Container en tailles. */
 const LARGEUR_TO_CONTAINER: Record<ModuleTexte['largeur'], ContainerProps['size']> = {
   etroit: 'narrow',
   moyen: 'medium',
@@ -10,9 +11,11 @@ const LARGEUR_TO_CONTAINER: Record<ModuleTexte['largeur'], ContainerProps['size'
 }
 
 /**
- * Texte riche (mentions légales, pages libres). `fields.document` renvoie un arbre
- * structuré rendu par DocumentRenderer, jamais du HTML : aucun assainissement
- * nécessaire, et jsdom ne tourne pas sur Cloudflare Workers.
+ * Texte riche (mentions légales, pages libres).
+ *
+ * `fields.document` renvoie un arbre structuré rendu par `DocumentRenderer`,
+ * jamais du HTML : aucun assainissement nécessaire. C'est important sur
+ * Workers, où les bibliothèques à base de jsdom ne tournent pas.
  */
 export default function Texte({ contenu, largeur }: ModuleTexte) {
   return (

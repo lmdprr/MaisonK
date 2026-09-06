@@ -5,9 +5,14 @@ import { PLANCHE_MAX, PLANCHE_STORAGE_KEY, type PlancheItem } from '@/lib/planch
 
 /**
  * État de la planche de teintes, partagé entre l'encart de la page Prestations
- * et le formulaire « Votre projet » via localStorage. L'hydratation se fait
- * après le montage pour que le rendu serveur (planche vide) corresponde au
- * premier rendu client.
+ * et le formulaire « Votre projet » via localStorage.
+ *
+ * L'hydratation se fait après le montage pour que le rendu serveur (planche
+ * vide) corresponde au premier rendu client ; `ready` permet d'attendre avant
+ * d'afficher un état « vide » définitif.
+ *
+ * Le localStorage peut être indisponible (navigation privée, quota) : chaque
+ * accès est protégé et la planche reste alors en mémoire pour la page courante.
  */
 export function usePlanche() {
   const [board, setBoard] = useState<PlancheItem[]>([])
@@ -18,10 +23,12 @@ export function usePlanche() {
       const raw = window.localStorage.getItem(PLANCHE_STORAGE_KEY)
       if (raw) {
         const parsed: unknown = JSON.parse(raw)
+        // On ne valide pas la forme des éléments : c'est notre propre écriture,
+        // et un élément malformé ne casse que son rendu.
         if (Array.isArray(parsed)) setBoard(parsed.slice(0, PLANCHE_MAX) as PlancheItem[])
       }
     } catch {
-      // localStorage indisponible (navigation privée, quota) : la planche reste en mémoire
+      // localStorage indisponible : la planche reste en mémoire.
     }
     setReady(true)
   }, [])
@@ -35,6 +42,9 @@ export function usePlanche() {
     }
   }, [])
 
+  // `pin` et `remove` passent par la forme fonctionnelle de setState pour
+  // rester corrects en cas de clics rapprochés ; l'écriture localStorage se
+  // fait dans le même passage pour ne pas diverger de l'état.
   const pin = useCallback(
     (item: PlancheItem) => {
       setBoard((current) => {

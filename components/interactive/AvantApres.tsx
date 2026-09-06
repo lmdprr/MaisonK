@@ -3,6 +3,10 @@
 import { useState } from 'react'
 import Image from '@/components/ui/Img'
 
+/**
+ * Sous-ensemble de `Projet` nécessaire au comparateur. Le module galerie
+ * (serveur) ne transmet que ces champs au client.
+ */
 export interface ProjetComparable {
   slug: string
   titre: string
@@ -14,23 +18,29 @@ export interface ProjetComparable {
 }
 
 interface Props {
+  /** Projets ayant une image « avant » (filtrés en amont). */
   projets: ProjetComparable[]
+  /** Texte d'aide affiché sous la poignée jusqu'à la première manipulation. */
   aide?: string | null
 }
 
 /**
- * Comparateur avant / après : onglets de projets, curseur horizontal (un
- * `input[type=range]` invisible couvre l'image, accessible au clavier), image
- * « avant » (projet 3D) rognée par clip-path. Le texte d'aide s'efface après
- * la première manipulation.
+ * Comparateur avant / après.
+ *
+ * Onglets de projets, puis un curseur horizontal : un `input[type=range]`
+ * invisible couvre toute l'image, ce qui donne le glisser à la souris, au
+ * tactile et au clavier sans gestionnaire d'événements maison. L'image
+ * « avant » (projet 3D) est rognée par `clip-path` à la position du curseur.
  */
 export default function AvantApres({ projets, aide }: Props) {
   const [index, setIndex] = useState(0)
+  /** Position du curseur en pourcentage. */
   const [pos, setPos] = useState(50)
   const [touched, setTouched] = useState(false)
   const actif = projets[index] ?? projets[0]
   if (!actif) return null
 
+  // Changer de projet recentre le curseur.
   const select = (i: number) => {
     setIndex(i)
     setPos(50)
@@ -63,6 +73,7 @@ export default function AvantApres({ projets, aide }: Props) {
       </div>
 
       <div className="relative">
+        {/* Cadre décalé derrière l'image, façon passe-partout */}
         <span aria-hidden="true" className="pointer-events-none absolute -bottom-3.5 -right-3.5 left-3.5 top-3.5 rounded-mk border border-terracotta opacity-55" />
         <div className="relative aspect-video min-h-[320px] cursor-ew-resize select-none overflow-hidden rounded-mk bg-sable">
           {actif.image_apres && <Image src={actif.image_apres} alt="Après : réalisé" fill sizes="100vw" className="object-cover" priority />}
@@ -72,6 +83,7 @@ export default function AvantApres({ projets, aide }: Props) {
             </div>
           )}
 
+          {/* Ligne de séparation et poignée : purement visuelles, le range en dessous reçoit les événements */}
           <div
             aria-hidden="true"
             className="pointer-events-none absolute inset-y-0 w-[1.5px] -translate-x-px bg-creme shadow-[0_0_0_.5px_rgb(85_16_32/.35)]"
@@ -102,6 +114,7 @@ export default function AvantApres({ projets, aide }: Props) {
             <span className="font-serif text-lg italic">Réalisé</span>
           </div>
 
+          {/* Styles plein cadre et poignée invisible dans globals.css (`.mk-ba`) */}
           <input
             className="mk-ba"
             type="range"

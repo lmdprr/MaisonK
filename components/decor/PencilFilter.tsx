@@ -1,4 +1,10 @@
-/** Filtre « crayon » appliqué aux croquis et papiers peints. Déclaré une fois par page. */
+/**
+ * Filtre SVG « crayon » : un léger déplacement par bruit fractal donne aux
+ * traits nets des croquis et papiers peints un rendu tracé à la main.
+ *
+ * Déclaré une seule fois dans le layout du site ; les SVG y font référence
+ * par `filter: url(#mk-pencil)`.
+ */
 export default function PencilFilter() {
   return (
     <svg width="0" height="0" className="absolute" aria-hidden="true">

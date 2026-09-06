@@ -14,12 +14,20 @@ interface Props {
   module: PageModule
   /** Position dans la page : le premier module rend un h1, les suivants un h2. */
   index: number
-  /** Slug de la page courante — repris dans le sujet de l'email du formulaire. */
+  /** Slug de la page courante, repris dans le corps de l'e-mail du formulaire. */
   pageSlug: string
   /** Singleton Coordonnées, lu une fois par page et transmis à chaque module. */
   coordonnees: Coordonnees | null
 }
 
+/**
+ * Aiguillage d'un bloc Keystatic vers son composant.
+ *
+ * C'est le seul endroit qui connaît la liste des modules côté rendu : ajouter
+ * un module = un `case` ici, une entrée dans `PageModule` (lib/types.ts) et un
+ * bloc dans `keystatic.config.ts`. Le `default` absorbe un discriminant inconnu
+ * (contenu plus récent que le code) sans faire tomber la page.
+ */
 export default async function ModuleRenderer({ module, index, pageSlug, coordonnees }: Props) {
   const level = index === 0 ? 1 : 2
 
@@ -32,8 +40,8 @@ export default async function ModuleRenderer({ module, index, pageSlug, coordonn
     case 'zone_intervention': return <ZoneIntervention {...module.value} level={level} coordonnees={coordonnees} />
     case 'bandeau_cta':       return <BandeauCta {...module.value} level={level} coordonnees={coordonnees} />
     case 'formulaire_projet': {
-      // `email_to` ne franchit jamais la frontière serveur → client : il est
-      // retiré des props et remplacé par un jeton chiffré.
+      // `email_to` ne franchit jamais la frontière serveur / client : retiré
+      // des props et remplacé par un jeton chiffré (lib/formToken.ts).
       const { email_to, ...publicProps } = module.value
       const recipientToken = await encryptRecipient(email_to)
 

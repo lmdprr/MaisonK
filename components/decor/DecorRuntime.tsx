@@ -4,27 +4,35 @@ import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 
 /**
- * Runtime des décorations, monté une fois dans le layout du site. Trois rôles :
+ * Runtime des décorations, monté une fois dans le layout du site.
+ *
+ * Trois comportements, pilotés par des attributs `data-*` posés par les
+ * composants serveur :
  *
  * 1. `[data-reveal]` : les blocs sous la ligne de flottaison apparaissent en
- *    glissant vers le haut quand ils entrent dans l'écran (`data-reveal-delay`
- *    pour décaler une carte par rapport à sa voisine).
+ *    glissant vers le haut quand ils entrent dans l'écran. `data-reveal-delay`
+ *    décale une carte par rapport à sa voisine.
  * 2. `[data-sketch]` : les croquis et papiers peints restent en pause tant
- *    qu'ils ne sont pas visibles ; on passe `--mk-play` à `running` à l'entrée
- *    (durée quasi nulle sur mobile et si l'utilisateur préfère moins d'animations,
- *    sauf le croquis du hero).
+ *    qu'ils ne sont pas visibles ; on passe `--mk-play` à `running` à l'entrée.
+ *    Sur mobile et en `prefers-reduced-motion`, la durée est rabattue à ~0
+ *    (le dessin apparaît d'un coup), sauf le croquis du hero.
  * 3. `[data-paint]` : le rouleau de peinture suit la souris sur les boutons et
  *    laisse des traces terracotta dans `[data-paint-layer]`.
  *
  * Aucun état React : le runtime observe le DOM, ce qui laisse les modules en
- * composants serveur. Il rescanne à chaque navigation et à chaque mutation.
+ * composants serveur. Il rescanne à chaque navigation (`pathname`) et à chaque
+ * mutation du DOM (menu mobile, confirmation du formulaire).
+ *
+ * @see app/globals.css pour les keyframes et les variables `--mk-*`
  */
 export default function DecorRuntime() {
   const pathname = usePathname()
 
+  // Apparitions et croquis.
   useEffect(() => {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const mobile = window.innerWidth < 1000
+    // Un élément n'est traité qu'une fois, même s'il survit à plusieurs scans.
     const seen = new WeakSet<Element>()
 
     const pendingReveal = new Set<HTMLElement>()
@@ -70,6 +78,8 @@ export default function DecorRuntime() {
         if (seen.has(el)) return
         seen.add(el)
         if (reduced) return
+        // Seuls les blocs sous la ligne de flottaison sont masqués : ce qui est
+        // déjà visible au chargement ne doit jamais clignoter.
         if (el.getBoundingClientRect().top > window.innerHeight * 0.92) {
           el.style.opacity = '0'
           el.style.transform = 'translateY(28px)'
@@ -92,11 +102,13 @@ export default function DecorRuntime() {
       })
     }
 
-    // Filet de sécurité : si l'observateur tarde (navigateur embarqué, onglet
-    // restauré), un contrôle synchrone au défilement fait le même travail.
+    // Filet de sécurité : si l'IntersectionObserver tarde (webview, onglet
+    // restauré, défilement très rapide), un contrôle synchrone au scroll fait
+    // le même travail. Un bloc masqué qui resterait invisible est le pire
+    // scénario pour ce genre d'effet.
     let ticking = false
     // Un bloc dont le haut est entré dans l'écran, ou déjà dépassé vers le
-    // haut (défilement rapide, ancre), ne doit jamais rester masqué.
+    // haut (ancre, retour arrière), compte comme atteint.
     const reached = (el: HTMLElement, threshold: number) => {
       const r = el.getBoundingClientRect()
       return r.bottom < 0 || r.top < window.innerHeight * (1 - threshold) || visibleRatio(el) >= threshold
@@ -115,6 +127,8 @@ export default function DecorRuntime() {
     window.addEventListener('resize', onScroll, { passive: true })
 
     scan()
+    // Rescan groupé par frame : une navigation client produit des dizaines de
+    // mutations d'un coup.
     let raf = 0
     const mo = new MutationObserver(() => {
       cancelAnimationFrame(raf)
@@ -132,10 +146,15 @@ export default function DecorRuntime() {
     }
   }, [pathname])
 
+  // Rouleau de peinture. Indépendant de la navigation : les écouteurs sont sur
+  // `document` et retrouvent le bouton par `closest('[data-paint]')`.
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    // Dernière position et nombre de traces par bouton, pour espacer les
+    // traces et plafonner le nombre de nœuds ajoutés.
     const last = new WeakMap<HTMLElement, { x: number; y: number; n: number }>()
 
+    /** Ajoute une trace de rouleau, et parfois une éclaboussure à côté. */
     const stamp = (layer: HTMLElement, x: number, y: number) => {
       const d = document.createElement('span')
       d.style.cssText = `position:absolute;left:${x - 12}px;top:${y - 13}px;width:24px;height:26px;border-radius:5px;transform:rotate(-18deg);background:#C07454 repeating-linear-gradient(90deg,rgba(237,234,228,.09) 0 1px,transparent 1px 4px,rgba(85,16,32,.07) 4px 5px,transparent 5px 9px)`
@@ -151,6 +170,7 @@ export default function DecorRuntime() {
     }
 
     const onMove = (e: PointerEvent) => {
+      // Au tactile il n'y a pas de survol : le rouleau reste caché.
       if (e.pointerType !== 'mouse') return
       const el = (e.target as Element | null)?.closest<HTMLElement>('[data-paint]')
       if (!el) return
@@ -161,6 +181,7 @@ export default function DecorRuntime() {
       el.style.setProperty('--mk-ry', `${y}px`)
       el.style.setProperty('--mk-ro', '1')
       const prev = last.get(el)
+      // Une trace tous les 5 px, 700 au maximum par bouton.
       if (prev && Math.hypot(x - prev.x, y - prev.y) < 5) return
       const n = (prev?.n ?? 0) + 1
       last.set(el, { x, y, n })

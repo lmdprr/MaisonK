@@ -8,6 +8,7 @@ import PaintButton from '@/components/ui/PaintButton'
 import ArrowLink from '@/components/ui/ArrowLink'
 import { HeroSketch } from '@/components/decor/Sketches'
 
+/** Lien déjà résolu côté serveur (`resolveLien`). */
 interface LienResolu {
   label: string
   url: string
@@ -25,13 +26,17 @@ interface Props {
   autoplay: boolean
 }
 
+/** Délai entre deux slides en lecture automatique (ms). */
 const INTERVAL = 6000
 
 /**
- * Diaporama du hero : la fin du titre (italique bordeaux), le compteur, la
- * légende et l'image changent ensemble. Lecture automatique interrompue par un
- * clic sur un point, mise en pause quand l'onglet est caché ou si l'utilisateur
- * préfère moins d'animations.
+ * Diaporama du hero. La fin du titre (italique accent), le compteur, la
+ * légende et l'image changent ensemble à chaque slide.
+ *
+ * Lecture automatique : relancée après un clic sur un point (le minuteur
+ * repart de zéro), mise en pause quand l'onglet est caché, désactivée en
+ * `prefers-reduced-motion`. Les images sont toutes montées et superposées ;
+ * seule l'opacité change, pour éviter un rechargement à chaque passage.
  */
 export default function HeroSlides({ eyebrow, titre, texte, bouton, citation, lien, slides, autoplay }: Props) {
   const [index, setIndex] = useState(0)
@@ -61,6 +66,7 @@ export default function HeroSlides({ eyebrow, titre, texte, bouton, citation, li
     }
   }, [start, stop])
 
+  /** Navigation manuelle : on repart sur un cycle complet depuis la slide choisie. */
   const go = (i: number) => {
     setIndex(i)
     start()
@@ -75,6 +81,7 @@ export default function HeroSlides({ eyebrow, titre, texte, bouton, citation, li
           {active?.ligne_titre && (
             <>
               <br />
+              {/* `key` force un remontage : l'animation d'entrée rejoue à chaque slide */}
               <em key={index} className="fadein inline-block">
                 {active.ligne_titre}
               </em>
@@ -112,6 +119,7 @@ export default function HeroSlides({ eyebrow, titre, texte, bouton, citation, li
                   fill
                   sizes="(min-width: 768px) 50vw, 100vw"
                   priority={i === 0}
+                  // Fondu de 1,4 s ; le zoom lent (7 s) court pendant toute la durée d'affichage
                   className={`object-cover transition-[opacity,transform] duration-[1400ms,7000ms] ease-[cubic-bezier(.4,0,.2,1),linear] ${
                     i === index ? 'scale-[1.06] opacity-100' : 'scale-100 opacity-0'
                   }`}

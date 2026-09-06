@@ -1,7 +1,16 @@
+/**
+ * Quadrilobe de la marque et papiers peints qui en sont composés.
+ *
+ * Le quadrilobe remplace toute coche ou puce sur le site (livrables, note de
+ * fin de grille, séparateur du bandeau de villes).
+ */
+
 import type { CSSProperties } from 'react'
 import { FLOWER } from './sketch-data'
 
 const PLAY = 'var(--mk-play,paused)'
+
+/** Éclosion d'une fleur, décalée de `delay` × `--mk-dur`. */
 const bloom = (delay: number): CSSProperties => ({
   transformOrigin: '50% 50%',
   transformBox: 'fill-box',
@@ -9,7 +18,7 @@ const bloom = (delay: number): CSSProperties => ({
   animationPlayState: PLAY,
 })
 
-/** Quadrilobe seul (séparateur du marquee, médaillon de l'aperçu Prestations). */
+/** Quadrilobe seul, statique (puces, séparateur du bandeau de villes). */
 export function Flower({ color = '#B9878F', className = '', style }: { color?: string; className?: string; style?: CSSProperties }) {
   return (
     <svg viewBox="0 0 100 100" aria-hidden="true" className={className} style={style}>
@@ -32,15 +41,18 @@ export function BloomFlower({ className = '' }: { className?: string }) {
 type Variant = 'full' | 'edge' | 'seed' | 'corner' | 'band' | 'marge'
 
 /**
- * Papier peint de quadrilobes, quatre variantes de la maquette :
+ * Papier peint de quadrilobes. Variantes, assignées par les modules :
  * - `edge`  : frise le long d'un bord, effilochée (bloc Carole) ;
  * - `seed`  : quelques fleurs solitaires au contour tracé (Contact, Votre projet) ;
- * - `corner`: médaillon dense dans un coin (À propos) ;
+ * - `corner`: médaillon dense dans un coin (en-tête À propos) ;
  * - `band`  : bande de deux rangs (bandeau CTA) ;
  * - `marge` : semis vertical au contour tracé pour les marges latérales des
  *   grands écrans (galerie) ; cadré par la largeur, il habille le haut de la section ;
- * - `full`  : mur complet.
- * Chaque fleur éclot avec un léger décalage quand DecorRuntime passe `--mk-play` à `running`.
+ * - `full`  : mur complet (non utilisé à ce jour, gardé pour une future page).
+ *
+ * Positions et couleurs sont déterministes (indices, pas d'aléatoire) : le
+ * SVG doit être identique au serveur et au client. Chaque fleur éclot avec un
+ * léger décalage quand DecorRuntime lance l'animation.
  */
 export default function Wall({ variant = 'full', opacity, className = '' }: { variant?: Variant; opacity?: number; className?: string }) {
   const S = 100
@@ -64,7 +76,7 @@ export default function Wall({ variant = 'full', opacity, className = '' }: { va
     const cs = ['#B9878F', '#B9878F', '#C07454', '#B9878F', '#8BC1A9']
     for (let j = 0; j < rows; j++)
       for (let i = 0; i < cols; i++) {
-        if (j === rows - 1 && (i * 7) % 3 === 0) continue // bord effiloché
+        if (j === rows - 1 && (i * 7) % 3 === 0) continue // trous dans le dernier rang : bord effiloché
         flowers.push({ x: i * S, y: j * S, color: cs[(i * 3 + j * 5) % cs.length], delay: i * 0.03 + j * 0.1 })
       }
     viewBox = `0 0 ${cols * S} ${rows * S}`

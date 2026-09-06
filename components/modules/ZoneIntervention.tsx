@@ -7,8 +7,11 @@ import { Flower } from '@/components/decor/Wall'
 type Props = ModuleZoneIntervention & { level: 1 | 2; coordonnees: Coordonnees | null }
 
 /**
- * Villes lues dans Coordonnées (une seule source). Bandeau défilant sur l'accueil,
- * nuage de pastilles sur À propos. Le séparateur floral SVG remplacera ✦ à l'étape décor.
+ * Villes lues dans Coordonnées (source unique). Deux affichages :
+ * - `defilant` : bandeau qui défile en continu, séparateur quadrilobe (accueil) ;
+ * - `chips` : nuage de pastilles à côté de la tête de section (À propos).
+ *
+ * Ne rend rien si aucune ville n'est renseignée.
  */
 export default function ZoneIntervention({ en_tete, affichage, fond, level, coordonnees }: Props) {
   const villes = coordonnees?.villes ?? []
@@ -16,6 +19,9 @@ export default function ZoneIntervention({ en_tete, affichage, fond, level, coor
 
   if (affichage === 'defilant') {
     const sep = <Flower className="mx-5 inline-block size-3 align-middle" />
+    // La bande est rendue deux fois et translatée de moitié (animation
+    // `mk-marquee`) pour boucler sans raccord visible. La seconde copie est
+    // masquée aux lecteurs d'écran ; le libellé accessible liste les villes.
     const bande = (
       <span className="pr-2">
         {villes.map((ville) => (

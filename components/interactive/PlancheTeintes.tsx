@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { MATERIALS, PLANCHE_MAX, TILTS, hexToHsl, hslToHex, hueName, type PlancheItem } from '@/lib/planche'
 import { usePlanche } from './usePlanche'
 
+/** État et actions de la planche, fournis par `usePlanche`. */
 interface ComposerProps {
   board: PlancheItem[]
   isFull: boolean
@@ -16,18 +17,26 @@ interface ComposerProps {
 
 /**
  * Composeur : sélecteur teinte / clarté / hex, six matières, planche 2 × 2.
- * Sans état propre à part la couleur en cours : la planche vient du hook.
+ *
+ * Partagé entre l'encart Prestations et le formulaire. Son seul état propre est
+ * la couleur en cours de réglage ; la planche elle-même vient du hook, donc du
+ * localStorage.
  */
 export function PlancheComposer({ board, isFull, pin, remove, pinLabel = 'Épingler la teinte' }: ComposerProps) {
+  // Bordeaux de la charte comme point de départ.
   const [hue, setHue] = useState(350)
   const [sat, setSat] = useState(42)
   const [light, setLight] = useState(38)
+  // Saisie hex en cours : on affiche ce que l'utilisateur tape, même incomplet,
+  // et on ne bascule sur la valeur calculée que quand il repasse aux curseurs.
   const [hexInput, setHexInput] = useState<string | null>(null)
 
   const color = `hsl(${hue} ${sat}% ${light}%)`
   const hex = hexInput ?? hslToHex(hue, sat, light)
   const has = (id: string) => board.some((x) => x.id === id)
 
+  // La clarté est bornée à [15, 85] : en dehors, la teinte n'est plus lisible
+  // sur la planche et le nom généré n'a plus de sens.
   const onHex = (raw: string) => {
     let v = raw.trim()
     if (v && v[0] !== '#') v = '#' + v
@@ -125,6 +134,7 @@ export function PlancheComposer({ board, isFull, pin, remove, pinLabel = 'Éping
         </div>
       </div>
 
+      {/* La planche : liège pointillé, quatre emplacements, épingles inclinées */}
       <div
         className="grid aspect-[4/3] grid-cols-2 grid-rows-2 gap-3.5 rounded-mk p-[18px] shadow-[inset_0_0_0_1px_rgb(21_21_21/.08),0_14px_30px_-18px_rgb(21_21_21/.4)]"
         style={{ background: 'radial-gradient(rgba(0,0,0,.05) 1px,transparent 1px) 0 0/6px 6px, #C9B99A' }}
@@ -159,8 +169,9 @@ export function PlancheComposer({ board, isFull, pin, remove, pinLabel = 'Éping
 }
 
 /**
- * Encart de la page Prestations : composeur + bouton « Continuer avec ma planche »
- * vers le formulaire, actif dès qu'une pièce est épinglée.
+ * Encart de la page Prestations : composeur + bouton « Continuer avec ma
+ * planche » vers le formulaire, actif dès qu'une pièce est épinglée. Le
+ * formulaire retrouve la planche via le localStorage.
  */
 export default function PlancheTeintes({ formUrl = '/votre-projet' }: { formUrl?: string }) {
   const { board, isFull, pin, remove } = usePlanche()
