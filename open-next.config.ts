@@ -14,6 +14,16 @@ import staticAssetsIncrementalCache from '@opennextjs/cloudflare/overrides/incre
  * `r2IncrementalCache` et déclarer le binding `NEXT_INC_CACHE_R2_BUCKET`
  * dans wrangler.jsonc.
  */
-export default defineCloudflareConfig({
-  incrementalCache: staticAssetsIncrementalCache,
-})
+export default {
+  ...defineCloudflareConfig({
+    incrementalCache: staticAssetsIncrementalCache,
+  }),
+
+  /**
+   * Commande utilisée par OpenNext pour compiler Next.js. Par défaut il lance
+   * `npm run build`, or c'est justement ce script qui appelle OpenNext (pour
+   * que les commandes par défaut de Workers Builds fonctionnent) : sans cette
+   * ligne, le build se relance lui-même à l'infini.
+   */
+  buildCommand: 'npx next build',
+}
