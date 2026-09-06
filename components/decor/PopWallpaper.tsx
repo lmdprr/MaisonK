@@ -21,7 +21,21 @@ interface Shape {
   k?: 'bg' | 'accent'
 }
 
-/** Silhouettes en 100 × 100, pleines, découpées par des aplats couleur tuile. */
+/*
+ * Grille de construction des silhouettes, commune à tous les jeux d'objets.
+ *
+ * - Carré 100 × 100, zone utile de 10 à 90 dans les deux sens : le SVG occupe
+ *   72 % de la tuile, une tuile fait 60 px sur mobile, la marge évite que la
+ *   silhouette touche le bord arrondi.
+ * - Trois rôles au plus par objet : la silhouette (encre), une découpe dans la
+ *   couleur de la tuile (`bg`), une touche de seconde couleur (`accent`).
+ *   Plusieurs tracés peuvent partager un rôle s'ils forment un seul détail
+ *   (les deux feuilles de la plante, la montagne et le soleil du cadre).
+ * - Formes pleines, pas de trait : le trait appartient aux croquis au trait
+ *   (sketch-data.ts), qui déclinent les mêmes objets dans l'autre rendu.
+ * - Un objet se lit en une seconde à 60 px, sur les six palettes : la découpe
+ *   doit rester visible sur la tuile bordeaux comme sur la tuile sable.
+ */
 const OBJECTS: Record<string, Shape[]> = {
   fauteuil: [
     { d: 'M18 62 v-24 a14 14 0 0 1 14 -14 h36 a14 14 0 0 1 14 14 v24 z' },
