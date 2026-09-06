@@ -1,0 +1,22 @@
+// Configuration du Worker Cloudflare. Le point d'entrée et le dossier d'assets
+// sont générés par `opennextjs-cloudflare build` (voir open-next.config.ts).
+// Les variables d'environnement se déclarent dans le dashboard, pas ici.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "maisonk-v2",
+  "main": ".open-next/worker.js",
+  // Ne pas reculer : nodejs_compat v2 (Node.js natif dans le runtime) exige une
+  // date postérieure au 2024-09-23.
+  "compatibility_date": "2025-03-25",
+  // global_fetch_strictly_public : un fetch() vers une adresse interne échoue
+  // au lieu d'atteindre le réseau Cloudflare.
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  // Logs et traces dans le dashboard Workers (inclus dans le plan Free).
+  "observability": {
+    "enabled": true
+  }
+}

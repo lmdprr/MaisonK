@@ -1,0 +1,70 @@
+title: Prestations
+slug: prestations
+status: published
+seo_title: Prestations — Maison K, conception et décoration d'intérieur
+seo_description: "Plans et aménagement, moodboard, modélisation 3D, home staging : quatre façons d'accompagner votre projet, sur devis, à La Réunion."
+seo_no_index: false
+modules:
+  - discriminant: intro
+    value:
+      eyebrow: Prestations
+      icone: plan
+      titre: De l'analyse à la mise en œuvre
+      titre_accent: ''
+      signature: ''
+      lien:
+        label: ''
+        url: ''
+      fond: creme
+      visuel:
+        discriminant: aucun
+        value: null
+      afficher_contact: false
+  - discriminant: prestations
+    value:
+      en_tete:
+        eyebrow: ''
+        icone: aucune
+        titre: ''
+        intro: ''
+        lien:
+          label: ''
+          url: ''
+      affichage: detail
+      prestations: []
+      fond: creme
+  - discriminant: grille_points
+    value:
+      en_tete:
+        eyebrow: Ma méthode
+        icone: aucune
+        titre: Votre projet en quatre étapes
+        intro: ''
+        lien:
+          label: ''
+          url: ''
+      fond: sombre
+      style: liste
+      items:
+        - titre: Analyse
+          texte: "Écoute, relevé complet des dimensions, identification des contraintes et du budget. Sans cette étape, l'esthétique ne repose sur aucune fondation solide."
+          icone: aucune
+        - titre: Structure
+          texte: "Zoning, plan d'aménagement, technique : optimiser les volumes et sécuriser les choix avant d'entrer dans la phase décorative."
+          icone: aucune
+        - titre: Projection
+          texte: "Moodboard, simulations 3D, références produits et prix : visualiser concrètement le résultat avant toute décision."
+          icone: aucune
+        - titre: Réalisation
+          texte: "Mise en œuvre des orientations définies, par mes soins ou par vous-même, jusqu'à la mise en scène finale."
+          icone: aucune
+      note_finale: C'est cette rigueur qui différencie une simple mise en décoration d'un véritable projet d'aménagement.
+  - discriminant: bandeau_cta
+    value:
+      titre: Envie de révéler
+      titre_accent: le potentiel de votre intérieur ?
+      texte: Chaque projet est unique. Parlons du vôtre.
+      cta:
+        label: Écrire sur WhatsApp
+        url: whatsapp
+      fond: rose

@@ -1,0 +1,15 @@
+logo: /images/logo/logo.png
+navigation_links:
+  - label: Accueil
+    url: /accueil
+  - label: Prestations
+    url: /prestations
+  - label: Réalisations
+    url: /realisations
+  - label: À propos
+    url: /a-propos
+  - label: Votre projet
+    url: /votre-projet
+cta:
+  label: Me contacter
+  url: /contact

@@ -1,0 +1,166 @@
+title: Accueil
+status: published
+seo_title: Maison K — Conception & décoration d'intérieur à La Réunion
+seo_description: >-
+  Carole Mondon, créatrice d'espaces de vie à La Réunion : plans, moodboard,
+  modélisation 3D et home staging, pensés autour de vous et de votre budget.
+seo_no_index: false
+modules:
+  - discriminant: hero
+    value:
+      eyebrow: Conception & décoration d'intérieur · La Réunion
+      titre: Construire vos espaces de vie,
+      texte: >-
+        Chaque projet est unique. Derrière chaque intérieur, il y a une
+        histoire, un mode de vie, des contraintes… et surtout un potentiel ! Mon
+        rôle : le révéler.
+      cta:
+        label: Découvrir mes prestations
+        url: /prestations
+      citation: 'Acheter moins, choisir juste : c''est là que tout se joue.'
+      lien:
+        label: Voir mes réalisations
+        url: /realisations
+      slides:
+        - image: /images/hero/accueil/modules/0/value/slides/0/image.jpg
+          alt: Salon rénové en home staging au Tampon
+          libelle: Home staging · Le Tampon
+          ligne_titre: chaleureux et lumineux
+          legende: Un intérieur daté devenu lumineux, chaleureux et cohérent.
+        - image: /images/hero/accueil/modules/0/value/slides/1/image.jpg
+          alt: Cuisine de l'appartement de la Volière à Saint-Pierre
+          libelle: Cuisine · Saint-Pierre
+          ligne_titre: esthétiques et fonctionnels
+          legende: L'existant conservé et assumé comme point de départ décoratif.
+        - image: /images/hero/accueil/modules/0/value/slides/2/image.jpg
+          alt: Chambre d'amis du projet Bérive à Saint-Pierre
+          libelle: Chambre · Saint-Pierre
+          ligne_titre: durables et cohérents
+          legende: Une modernité douce, respectueuse du caractère ancien de la maison.
+        - image: /images/hero/accueil/modules/0/value/slides/3/image.jpg
+          alt: Modélisation 3D du séjour de l'appartement Saint-Gillois
+          libelle: Modélisation 3D · Saint-Gilles
+          ligne_titre: projetés avant travaux
+          legende: La projection rend la décision concrète.
+      defilement_auto: true
+  - discriminant: zone_intervention
+    value:
+      en_tete:
+        icone: aucune
+        lien: {}
+      affichage: defilant
+      fond: sable
+  - discriminant: grille_points
+    value:
+      en_tete:
+        eyebrow: Pour qui ?
+        icone: fauteuil
+        titre: Un accompagnement adapté à votre situation
+        intro: >-
+          Que vous habitiez, louiez ou construisiez, chaque projet commence par
+          l'analyse du lieu, de ses contraintes et de votre budget.
+        lien: {}
+      fond: creme
+      style: cellules
+      items:
+        - titre: Vous habitez
+          texte: >-
+            Transformer un logement neutre ou daté en lieu de vie moderne,
+            chaleureux et adapté à votre quotidien, sans tout démolir.
+          icone: aucune
+        - titre: Vous louez
+          texte: >-
+            Créer un lieu coup de cœur dès la première visite : un bien plus
+            attractif, plus fonctionnel, différenciant sur le marché locatif.
+          icone: aucune
+        - titre: Vous construisez
+          texte: >-
+            Maximiser chaque mètre carré sans jamais sacrifier le confort ni
+            l'esthétique, du plan d'aménagement à la décoration.
+          icone: aucune
+  - discriminant: intro
+    value:
+      eyebrow: Créatrice d'espaces de vie
+      icone: aucune
+      titre: Bonjour, je suis
+      titre_accent: Carole Mondon
+      lien:
+        label: Mon parcours
+        url: /a-propos
+      fond: sable
+      visuel:
+        discriminant: portrait
+        value:
+          image: /images/portraits/accueil/modules/3/value/visuel/value/image.png
+          alt: Carole Mondon
+          position: gauche
+      afficher_contact: false
+  - discriminant: prestations
+    value:
+      en_tete:
+        eyebrow: Prestations
+        icone: aucune
+        titre: Quatre façons de vous accompagner
+        lien:
+          label: Toutes les prestations
+          url: /prestations
+      affichage: apercu
+      prestations: []
+      fond: sombre
+  - discriminant: galerie
+    value:
+      en_tete:
+        eyebrow: Réalisations
+        icone: aucune
+        titre: Le potentiel révélé
+        lien:
+          label: Avant / après
+          url: /realisations
+      fond: creme
+      source:
+        discriminant: projets
+        value:
+          projets: []
+          limite: 4
+      affichage: cartes
+  - discriminant: bandeau_cta
+    value:
+      titre: Envie de révéler
+      titre_accent: le potentiel de votre intérieur ?
+      texte: Chaque projet est unique. Parlons du vôtre.
+      cta:
+        label: Écrire sur WhatsApp
+        url: whatsapp
+      fond: rose
+  - discriminant: galerie
+    value:
+      en_tete:
+        icone: aucune
+        titre: Suivez les coulisses
+        lien:
+          label: '@maisonk.re ↗'
+          url: https://instagram.com/maisonk.re
+      fond: sable
+      source:
+        discriminant: images
+        value:
+          images:
+            - image: >-
+                /images/galerie/accueil/modules/7/value/source/value/images/0/image.jpg
+              url: https://instagram.com/maisonk.re
+            - image: >-
+                /images/galerie/accueil/modules/7/value/source/value/images/1/image.jpg
+              url: https://instagram.com/maisonk.re
+            - image: >-
+                /images/galerie/accueil/modules/7/value/source/value/images/2/image.jpg
+              url: https://instagram.com/maisonk.re
+            - image: >-
+                /images/galerie/accueil/modules/7/value/source/value/images/3/image.jpg
+              url: https://instagram.com/maisonk.re
+            - image: >-
+                /images/galerie/accueil/modules/7/value/source/value/images/4/image.jpg
+              url: https://instagram.com/maisonk.re
+            - image: >-
+                /images/galerie/accueil/modules/7/value/source/value/images/5/image.jpg
+              url: https://instagram.com/maisonk.re
+      affichage: mosaique

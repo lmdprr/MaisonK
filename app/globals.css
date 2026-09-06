@@ -1,0 +1,441 @@
+@import "tailwindcss";
+
+/*
+ * Fondations visuelles MaisonK (charte v2).
+ *
+ * Un seul endroit pour les couleurs, polices et rythmes : les modules consomment
+ * ces tokens via Tailwind, jamais une valeur en dur. Le fond d'une section est
+ * choisi par l'éditeur (`data-fond`), les rôles de couleur en découlent ici.
+ *
+ * Organisation du fichier :
+ *   1. tokens `@theme`
+ *   2. rôles de couleur par fond de section
+ *   3. base typographique
+ *   4. composants utilitaires (eyebrow, num, lead, prose, field)
+ *   5. animations des composants interactifs
+ *   6. animations du décor (croquis, papiers peints, rouleau)
+ */
+
+@theme {
+  /* Palette */
+  --color-creme: #edeae4;
+  --color-sable: #d7d0b4;
+  --color-sable-2: #e6e1d7;
+  --color-sable-3: #e9e4da;
+  --color-sombre: #151515;
+  --color-rose: #e6d9d3;
+  --color-bordeaux: #551020;
+  --color-bordeaux-2: #3d0b17;
+  --color-terracotta: #c07454;
+  --color-rose-clair: #c08a96;
+  --color-sauge: #8bc1a9;
+  --color-fleur: #b9878f;
+  --color-encre: #151515;
+  --color-gris: #3a3a3a;
+  --color-muted: #6e6e6e;
+
+  /* Typographie */
+  --font-sans: var(--font-manjari), system-ui, sans-serif;
+  --font-serif: var(--font-playfair), Georgia, serif;
+
+  /* Rythmes */
+  --spacing-gutter: clamp(20px, 5vw, 72px);
+  --spacing-section: clamp(72px, 10vw, 140px);
+  --spacing-section-sm: clamp(64px, 9vw, 120px);
+  --spacing-head: clamp(40px, 5vw, 72px);
+  --radius-mk: 2px;
+  /* Plafond des grilles d'images (module galerie), partagé avec ses marges décorées. */
+  --container-grid: 1000px;
+}
+
+/*
+ * Rôles de couleur par fond de section. Chaque valeur de `data-fond` redéfinit
+ * texte, texte secondaire, accent et filets ; les modules n'utilisent que les
+ * rôles (`text-(--fg)`, `border-(--line)`...), ce qui rend un module portable
+ * d'un fond à l'autre sans variante de code. Seul `sombre` inverse la palette.
+ */
+:root,
+[data-fond="creme"] {
+  --bg: var(--color-creme);
+  --fg: var(--color-encre);
+  --fg-2: var(--color-gris);
+  --fg-muted: var(--color-muted);
+  --accent: var(--color-bordeaux);
+  --accent-hover: var(--color-terracotta);
+  --num: var(--color-terracotta);
+  --line: rgb(21 21 21 / 0.1);
+  --line-strong: rgb(21 21 21 / 0.3);
+  --hover-bg: var(--color-sable-3);
+}
+
+[data-fond="sable"] {
+  --bg: var(--color-sable);
+  --hover-bg: var(--color-sable-2);
+}
+
+[data-fond="rose"] {
+  --bg: var(--color-rose);
+}
+
+[data-fond="sombre"] {
+  --bg: var(--color-sombre);
+  --fg: var(--color-creme);
+  --fg-2: rgb(237 234 228 / 0.68);
+  --fg-muted: rgb(237 234 228 / 0.5);
+  --accent: var(--color-rose-clair);
+  --accent-hover: var(--color-rose-clair);
+  --num: var(--color-terracotta);
+  --line: rgb(237 234 228 / 0.14);
+  --line-strong: rgb(237 234 228 / 0.4);
+  --hover-bg: rgb(237 234 228 / 0.06);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: var(--color-creme);
+    color: var(--color-encre);
+    font-family: var(--font-sans);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    text-wrap: balance;
+  }
+
+  h1 {
+    font-size: clamp(42px, 5.4vw, 84px);
+    line-height: 1.02;
+    letter-spacing: -0.015em;
+  }
+
+  h2 {
+    font-size: clamp(34px, 3.6vw, 56px);
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+  }
+
+  h3 {
+    font-size: 24px;
+    line-height: 1.15;
+  }
+
+  h1 em,
+  h2 em {
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  ::selection {
+    background: var(--color-bordeaux);
+    color: var(--color-creme);
+  }
+}
+
+@layer components {
+  /* Petit texte au-dessus des titres */
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 0;
+    font-size: 13px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .eyebrow[data-line="true"]::before {
+    content: "";
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: currentColor;
+  }
+
+  /* Numéro de liste / carte */
+  .num {
+    font-family: var(--font-serif);
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    color: var(--num);
+  }
+
+  /* Texte courant d'un module */
+  .lead {
+    color: var(--fg-2);
+    max-width: 52ch;
+  }
+
+  /* Texte riche rendu par DocumentRenderer (fields.document) */
+  .prose-mk {
+    color: var(--fg-2);
+  }
+  .prose-mk p + p {
+    margin-top: 18px;
+  }
+  .prose-mk strong {
+    font-weight: 700;
+    color: var(--fg);
+  }
+  .prose-mk a {
+    color: var(--accent);
+    border-bottom: 1px solid currentColor;
+  }
+  .prose-mk h1 {
+    font-size: clamp(38px, 5vw, 64px);
+    color: var(--fg);
+  }
+  .prose-mk h2 {
+    font-size: 26px;
+    margin-top: 40px;
+    color: var(--fg);
+  }
+  .prose-mk h3 {
+    font-size: 20px;
+    margin-top: 28px;
+    color: var(--fg);
+  }
+  .prose-mk h1 + *,
+  .prose-mk h2 + *,
+  .prose-mk h3 + * {
+    margin-top: 12px;
+  }
+  .prose-mk ul,
+  .prose-mk ol {
+    margin-top: 12px;
+    padding-left: 1.2em;
+    list-style: disc;
+  }
+  .prose-mk blockquote {
+    margin-top: 18px;
+    padding-left: 20px;
+    border-left: 1px solid var(--accent);
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 20px;
+    color: var(--accent);
+  }
+
+  /* Champ de formulaire souligné */
+  .field {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--line-strong);
+    padding: 12px 0;
+    font: inherit;
+    font-size: 16px;
+    color: var(--fg);
+    outline: none;
+    transition: border-color 0.3s;
+  }
+  .field:focus {
+    border-bottom-color: var(--color-bordeaux);
+  }
+}
+
+/* Bandeau défilant des villes : le contenu est dupliqué, on translate de moitié */
+@keyframes mk-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee {
+  display: flex;
+  width: max-content;
+  animation: mk-marquee 48s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee {
+    animation: none;
+    flex-wrap: wrap;
+    width: auto;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* ── Composants interactifs (diaporama, comparateur, planche) ──────────────── */
+
+/* Fin de titre du hero : entre à chaque changement de slide */
+@keyframes mk-fadein {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.fadein {
+  animation: mk-fadein 0.8s ease both;
+}
+
+/* Curseur du comparateur avant / après : plein cadre, poignée invisible */
+input[type='range'].mk-ba {
+  -webkit-appearance: none;
+  appearance: none;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  background: transparent;
+  cursor: ew-resize;
+}
+input[type='range'].mk-ba::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: transparent;
+  border: 0;
+}
+input[type='range'].mk-ba::-moz-range-thumb {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: transparent;
+  border: 0;
+}
+input[type='range'].mk-ba::-moz-range-track {
+  background: transparent;
+}
+
+/* Curseurs teinte / clarté de la planche */
+input[type='range'].mk-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 14px;
+  margin: 0;
+  border-radius: 7px;
+  cursor: pointer;
+}
+input[type='range'].mk-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--color-creme);
+  border: 2px solid var(--color-bordeaux);
+  box-shadow: 0 1px 4px rgb(21 21 21 / 0.3);
+}
+input[type='range'].mk-slider::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--color-creme);
+  border: 2px solid var(--color-bordeaux);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fadein {
+    animation: none;
+  }
+}
+
+/* ── Décor : croquis, papiers peints, rouleau de peinture ──────────────────
+ *
+ * Toutes ces animations démarrent en pause (`--mk-play: paused`, valeur par
+ * défaut dans les composants) et sont lancées par DecorRuntime quand
+ * l'ancêtre `[data-sketch]` entre dans l'écran. `--mk-dur` est le multiplicateur
+ * de durée : DecorRuntime le rabat à ~0 sur mobile et en reduced-motion.
+ */
+
+/* Trait qui se dessine (pathLength=1 sur chaque path) */
+@keyframes mk-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes mk-tint {
+  to {
+    fill-opacity: var(--mk-tint, 0.2);
+  }
+}
+/* Groupe qui glisse vers sa position finale (cadre et lampe du hero) */
+@keyframes mk-move {
+  to {
+    transform: none;
+  }
+}
+/* Plan d'aménagement qui bascule en perspective */
+@keyframes mk-tilt {
+  to {
+    transform: perspective(700px) rotateX(42deg);
+  }
+}
+/* Trait de construction pointillé qui s'efface une fois le trait final tracé */
+@keyframes mk-ghost {
+  to {
+    opacity: 0;
+  }
+}
+/* Aplat net qui balaie de gauche à droite (mur du hero) */
+@keyframes mk-sweep {
+  to {
+    transform: scaleX(1);
+  }
+}
+/* Rayons de la lampe du hero */
+@keyframes mk-bounce {
+  0%,
+  100% {
+    transform: none;
+  }
+  40% {
+    transform: translateY(-5px) scale(1.12);
+  }
+  70% {
+    transform: translateY(1px);
+  }
+}
+/* Quadrilobe qui éclot (papiers peints de Wall) */
+@keyframes mk-bloom {
+  from {
+    transform: scale(0) rotate(-20deg);
+  }
+  to {
+    transform: none;
+  }
+}
+
+/* Le papier peint d'une carte « Pour qui » se dessine au survol */
+[data-wallpaper]:hover {
+  --mk-play: running;
+}
+
+/* Le rouleau remplace le curseur sur les boutons, uniquement avec une vraie souris */
+@media (hover: hover) and (pointer: fine) {
+  [data-paint]:hover {
+    cursor: none;
+  }
+}

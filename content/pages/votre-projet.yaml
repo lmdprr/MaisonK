@@ -1,0 +1,45 @@
+title: Votre projet
+slug: votre-projet
+status: published
+seo_title: Votre projet — Maison K
+seo_description: "Quelques mots sur votre pièce, et Carole vous rappelle : trois questions, deux minutes, aucun engagement."
+seo_no_index: false
+modules:
+  - discriminant: formulaire_projet
+    value:
+      eyebrow: Votre projet
+      icone: cadre
+      titre: Quelques mots sur votre pièce, et je vous appelle.
+      intro: Trois questions, deux minutes. Je prépare notre premier échange à partir de vos réponses.
+      pieces:
+        - Salon
+        - Chambre
+        - Cuisine
+        - Salle de bain
+        - Bureau
+        - Entrée / couloir
+        - Varangue / extérieur
+        - Tout le logement
+      ambiances:
+        - Chaleureuse
+        - Épurée
+        - Naturelle
+        - Colorée
+        - Bord de mer
+        - Vintage
+        - Contemporaine
+      max_ambiances: 3
+      photo_activee: true
+      label_envoi: Recevoir mon créneau d'échange
+      note_envoi: Je vous rappelle rapidement. Aucun engagement, aucune newsletter.
+      confirmation:
+        titre: Merci {prenom}, je prépare notre échange.
+        texte: "J'ai tout ce qu'il me faut pour vous appeler avec de premières idées."
+        etapes:
+          - Je vous appelle pour convenir d'un créneau.
+          - Un premier échange autour de votre pièce, de vos contraintes et de votre budget.
+          - "Une proposition détaillée : visuels d'ambiance, références produits et prix."
+        lien:
+          label: En attendant, découvrez mes réalisations
+          url: /realisations
+      email_to: maisonk.re@gmail.com

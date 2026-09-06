@@ -1,0 +1,52 @@
+title: Réalisations
+status: published
+seo_title: Réalisations — Maison K, décoration d'intérieur à La Réunion
+seo_description: >-
+  Le potentiel projeté, puis révélé : découvrez les intérieurs révélés par
+  Maison K à La Réunion, avec le comparateur avant / après.
+seo_no_index: false
+modules:
+  - discriminant: intro
+    value:
+      eyebrow: Réalisations
+      icone: cadre
+      titre: Le potentiel projeté, puis révélé.
+      lien: {}
+      fond: creme
+      visuel:
+        discriminant: aucun
+      afficher_contact: false
+  - discriminant: galerie
+    value:
+      en_tete:
+        icone: aucune
+        lien: {}
+      fond: creme
+      source:
+        discriminant: projets
+        value:
+          projets: []
+          limite: 0
+      affichage: comparateur
+      texte_aide: glissez
+  - discriminant: galerie
+    value:
+      en_tete:
+        icone: aucune
+        lien: {}
+      fond: creme
+      source:
+        discriminant: projets
+        value:
+          projets: []
+          limite: 0
+      affichage: fiches
+  - discriminant: bandeau_cta
+    value:
+      titre: Envie de révéler
+      titre_accent: le potentiel de votre intérieur ?
+      texte: Chaque projet est unique. Parlons du vôtre.
+      cta:
+        label: Écrire sur WhatsApp
+        url: whatsapp
+      fond: rose

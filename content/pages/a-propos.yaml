@@ -1,0 +1,69 @@
+title: À propos
+slug: a-propos
+status: published
+seo_title: À propos — Carole Mondon, créatrice d'espaces de vie
+seo_description: "Décoratrice d'intérieur et designer d'espace formée au dessin de projet du bâtiment, Carole Mondon révèle le potentiel de chaque lieu, sur toute l'île de La Réunion."
+seo_no_index: false
+modules:
+  - discriminant: intro
+    value:
+      eyebrow: À propos
+      icone: plante
+      titre: Derrière chaque intérieur, il y a une histoire
+      titre_accent: ''
+      signature: Carole
+      lien:
+        label: ''
+        url: ''
+      fond: creme
+      visuel:
+        discriminant: portrait
+        value:
+          image: /images/portraits/a-propos/carole.png
+          alt: Carole Mondon
+          position: droite
+      afficher_contact: false
+  - discriminant: grille_points
+    value:
+      en_tete:
+        eyebrow: Ma démarche
+        icone: aucune
+        titre: Créer de la valeur sans surconsommer
+        intro: ''
+        lien:
+          label: ''
+          url: ''
+      fond: sable
+      style: liste
+      items:
+        - titre: Optimiser l'existant
+          texte: Conserver, repositionner, valoriser ce que vous possédez déjà. Peu d'achats, mais des choix précis.
+          icone: plante
+        - titre: Structurer avant de décorer
+          texte: "Analyse, technique et anticipation en amont : c'est cette rigueur qui garantit la cohérence du résultat final."
+          icone: plan
+        - titre: Allier esthétique, fonctionnalité et stratégie
+          texte: Un intérieur bien pensé n'est pas un luxe. C'est un levier puissant d'attractivité et de rentabilité.
+          icone: fauteuil
+      note_finale: ''
+  - discriminant: zone_intervention
+    value:
+      en_tete:
+        eyebrow: Toute l'île
+        icone: aucune
+        titre: Maison K intervient sur toute l'île de La Réunion
+        intro: "De Saint-Gilles à Saint-Pierre, du Tampon à Saint-André : je me déplace sur toute l'île, jusque dans les cirques."
+        lien:
+          label: ''
+          url: ''
+      affichage: chips
+      fond: creme
+  - discriminant: bandeau_cta
+    value:
+      titre: Envie de révéler
+      titre_accent: le potentiel de votre intérieur ?
+      texte: Chaque projet est unique. Parlons du vôtre.
+      cta:
+        label: Écrire sur WhatsApp
+        url: whatsapp
+      fond: rose

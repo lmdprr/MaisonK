@@ -1,0 +1,25 @@
+title: Contact
+slug: contact
+status: published
+seo_title: Contact — Maison K
+seo_description: "Décrivez-moi votre espace, vos envies, vos contraintes et votre budget : WhatsApp, téléphone ou e-mail, je vous réponds rapidement."
+seo_no_index: false
+modules:
+  - discriminant: intro
+    value:
+      eyebrow: Contact
+      icone: fauteuil
+      titre: Contactez-moi pour discuter de vos projets !
+      titre_accent: ''
+      signature: ''
+      lien:
+        label: Vous avez un projet précis ? Composez votre planche
+        url: /votre-projet
+      fond: creme
+      visuel:
+        discriminant: image
+        value:
+          image: /images/intro/contact/voliere-terrasse.jpg
+          alt: Terrasse de l'appartement de la Volière
+          position: droite
+      afficher_contact: true

@@ -1,0 +1,10 @@
+title: Mentions légales
+slug: mentions-legales
+status: published
+seo_title: Mentions légales — Maison K
+seo_description: ''
+seo_no_index: true
+modules:
+  - discriminant: texte
+    value:
+      largeur: etroit
