@@ -18,5 +18,8 @@
   // Logs et traces dans le dashboard Workers (inclus dans le plan Free).
   "observability": {
     "enabled": true
-  }
+  },
+  // Sans ce réglage, chaque déploiement remplace les variables en clair
+  // saisies dans le dashboard par celles de ce fichier, c'est-à-dire aucune.
+  "keep_vars": true
 }
