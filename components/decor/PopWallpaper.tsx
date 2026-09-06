@@ -1,8 +1,13 @@
 /**
  * Papier peint pop de l'en-tête sans visuel : une grille de tuiles colorées
- * portant des silhouettes de mobilier et le quadrilobe de la marque.
+ * portant des silhouettes et le quadrilobe de la marque.
  *
- * Chaque tuile a deux faces (un meuble devant, un autre objet ou une fleur
+ * Deux jeux d'objets sur la même grille, la même palette et le même tempo :
+ * `mobilier` (ce qui a été livré, Réalisations) et `atelier` (les outils de
+ * ce qui est proposé, Prestations). Le visiteur reconnaît la signature d'une
+ * page à l'autre et lit l'orientation sans lire le titre.
+ *
+ * Chaque tuile a deux faces (un objet devant, un autre ou une fleur
  * derrière) : elle se retourne lentement à tour de rôle, comme si la pièce se
  * réaménageait d'elle-même, et immédiatement sous la souris. Les couleurs et
  * les objets sont tirés de l'index : le rendu est identique serveur et client.
@@ -36,13 +41,17 @@ interface Shape {
  * - Un objet se lit en une seconde à 60 px, sur les six palettes : la découpe
  *   doit rester visible sur la tuile bordeaux comme sur la tuile sable.
  */
+export type Jeu = 'mobilier' | 'atelier'
+
+type Vocabulaire = Record<string, Shape[]>
+
 /*
  * Vocabulaire mobilier : ce qui a été livré. Chaque type de pièce des projets
  * (salon, séjour, chambre, cuisine, maison) a au moins un objet qui le nomme ;
  * plante, cadre et miroir sont transverses. La fleur reste en dernier : la
  * marche d'ordonnancement l'exclut et la place à intervalle fixe.
  */
-const OBJECTS: Record<string, Shape[]> = {
+const MOBILIER: Vocabulaire = {
   // Salon
   fauteuil: [
     { d: 'M18 62 v-24 a14 14 0 0 1 14 -14 h36 a14 14 0 0 1 14 14 v24 z' },
@@ -118,7 +127,80 @@ const OBJECTS: Record<string, Shape[]> = {
   fleur: [{ d: FLOWER }],
 }
 
-const NAMES = Object.keys(OBJECTS)
+/*
+ * Vocabulaire atelier : les outils de ce qui est proposé. Deux objets par
+ * prestation (plans, moodboard, 3D, home staging), trois outils transverses,
+ * la fleur en dernier comme dans le mobilier. La maison filaire est le pendant
+ * au trait de la façade pleine du mobilier : le projet dessiné, puis livré.
+ */
+const ATELIER: Vocabulaire = {
+  // Plans & aménagement
+  equerre: [
+    { d: 'M14 86 L86 86 L14 14 Z' },
+    { d: 'M32 72 L58 72 L32 46 Z', k: 'bg' },
+    { d: 'M26 84 v-7 h4 v7 z M38 84 v-7 h4 v7 z M50 84 v-7 h4 v7 z M62 84 v-7 h4 v7 z', k: 'accent' },
+  ],
+  metre: [
+    { d: 'M14 52 a28 28 0 1 0 56 0 a28 28 0 1 0 -56 0 z' },
+    { d: 'M70 58 h14 v8 h-14 z M84 56 h4 v14 h-4 z' },
+    { d: 'M30 52 a12 12 0 1 0 24 0 a12 12 0 1 0 -24 0 z', k: 'bg' },
+    { d: 'M38 52 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0 z', k: 'accent' },
+  ],
+  plan: [
+    { d: 'M14 30 h56 v40 h-56 z' },
+    { d: 'M64 50 a10 20 0 1 0 20 0 a10 20 0 1 0 -20 0 z' },
+    { d: 'M70 50 a4 11 0 1 0 8 0 a4 11 0 1 0 -8 0 z', k: 'bg' },
+    { d: 'M22 40 h30 v4 h-30 z M22 50 h22 v4 h-22 z M22 60 h26 v4 h-26 z', k: 'accent' },
+  ],
+  // Moodboard & étude préparatoire
+  nuancier: [
+    { d: 'M43 22 h14 v56 h-14 z' },
+    { d: 'M26 30 l13 -4 l16 52 l-13 4 z' },
+    { d: 'M74 30 l-13 -4 l-16 52 l13 4 z', k: 'accent' },
+    { d: 'M46 78 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0 z', k: 'bg' },
+  ],
+  pinceau: [
+    { d: 'M47 10 h6 v40 h-6 z' },
+    { d: 'M34 60 h32 v18 l-4 8 h-24 l-4 -8 z' },
+    { d: 'M36 50 h28 v10 h-28 z', k: 'accent' },
+  ],
+  // Modélisation 3D
+  cube: [
+    { d: 'M50 12 L84 31 L84 69 L50 88 L16 69 L16 31 Z' },
+    { d: 'M50 19 L76 34 L50 49 L24 34 Z', k: 'bg' },
+    { d: 'M53 54 L78 40 L78 66 L53 80 Z', k: 'accent' },
+  ],
+  maison_filaire: [
+    { d: 'M50 14 L88 46 L78 46 L78 86 L22 86 L22 46 L12 46 Z' },
+    { d: 'M30 50 h40 v36 h-40 z M50 24 L70 42 L30 42 Z', k: 'bg' },
+    { d: 'M44 64 h12 v22 h-12 z M34 56 h8 v8 h-8 z', k: 'accent' },
+  ],
+  // Home staging & réalisation décorative
+  cle: [
+    { d: 'M14 50 a16 16 0 1 0 32 0 a16 16 0 1 0 -32 0 z' },
+    { d: 'M42 46 h46 v8 h-46 z' },
+    { d: 'M24 50 a6 6 0 1 0 12 0 a6 6 0 1 0 -12 0 z', k: 'bg' },
+    { d: 'M72 54 h6 v9 h-6 z M82 54 h6 v12 h-6 z', k: 'accent' },
+  ],
+  coussin: [
+    { d: 'M22 22 q28 -8 56 0 q8 28 0 56 q-28 8 -56 0 q-8 -28 0 -56 z' },
+    { d: 'M45 50 a5 5 0 1 0 10 0 a5 5 0 1 0 -10 0 z', k: 'accent' },
+    { d: 'M28 48 h14 v4 h-14 z M58 48 h14 v4 h-14 z M48 28 h4 v14 h-4 z M48 58 h4 v14 h-4 z', k: 'bg' },
+  ],
+  // Transverses
+  crayon: [
+    { d: 'M26 72 L64 34 L76 46 L38 84 Z' },
+    { d: 'M26 72 L20 88 L38 84 Z' },
+    { d: 'M64 34 L72 26 L84 38 L76 46 Z', k: 'accent' },
+  ],
+  compas: [
+    { d: 'M50 12 L32 84 L40 86 L50 46 L60 86 L68 84 Z' },
+    { d: 'M43 20 a7 7 0 1 0 14 0 a7 7 0 1 0 -14 0 z', k: 'accent' },
+  ],
+  fleur: [{ d: FLOWER }],
+}
+
+const JEUX: Record<Jeu, Vocabulaire> = { mobilier: MOBILIER, atelier: ATELIER }
 
 /** Fond de tuile, encre de la silhouette, seconde couleur. Palette de la charte. */
 const PALETTES: [string, string, string][] = [
@@ -130,13 +212,13 @@ const PALETTES: [string, string, string][] = [
   ['#e6d9d3', '#c07454', '#551020'],
 ]
 
-function Face({ object, palette, back }: { object: string; palette: number; back?: boolean }) {
+function Face({ shapes, palette, back }: { shapes: Shape[]; palette: number; back?: boolean }) {
   const [bg, ink, accent] = PALETTES[palette % PALETTES.length]
   const fill = { bg, accent, ink }
   return (
     <span data-face={back ? 'back' : 'front'} style={{ background: bg }}>
       <svg viewBox="0 0 100 100" aria-hidden="true">
-        {OBJECTS[object].map((s, i) => (
+        {shapes.map((s, i) => (
           <path key={i} d={s.d} fill={fill[s.k ?? 'ink']} fillRule="evenodd" />
         ))}
       </svg>
@@ -147,24 +229,28 @@ function Face({ object, palette, back }: { object: string; palette: number; back
 /**
  * Grille de tuiles. Le nombre est large (le conteneur masque le surplus) :
  * l'ordre des objets est une marche de pas 7 dans la liste, une fleur toutes
- * les cinq tuiles, pour qu'aucune colonne ne répète sa voisine.
+ * les cinq tuiles, pour qu'aucune colonne ne répète sa voisine. Le pas 7 est
+ * premier avec les onze objets hors fleur de chaque jeu : tous apparaissent.
  */
-export default function PopWallpaper({ count = 60, className = '' }: { count?: number; className?: string }) {
+export default function PopWallpaper({ jeu = 'mobilier', count = 60, className = '' }: { jeu?: Jeu; count?: number; className?: string }) {
+  const objets = JEUX[jeu]
+  const noms = Object.keys(objets)
+  const n = noms.length - 1
   const tiles = Array.from({ length: count }, (_, i) => {
     const fleur = i % 5 === 3
-    const front = fleur ? 'fleur' : NAMES[(i * 7) % (NAMES.length - 1)]
-    const back = fleur ? NAMES[(i * 3 + 1) % (NAMES.length - 1)] : i % 3 === 1 ? 'fleur' : NAMES[(i * 7 + 4) % (NAMES.length - 1)]
+    const front = fleur ? 'fleur' : noms[(i * 7) % n]
+    const back = fleur ? noms[(i * 3 + 1) % n] : i % 3 === 1 ? 'fleur' : noms[(i * 7 + 4) % n]
     return { front, back, p1: (i * 5 + Math.floor(i / 7)) % PALETTES.length, p2: (i * 5 + Math.floor(i / 7) + 3) % PALETTES.length, delay: ((i * 37) % count) / count }
   })
 
   return (
-    <span data-sketch="" data-pop="" aria-hidden="true" className={`block ${className}`.trim()}>
+    <span data-sketch="" data-pop="" data-jeu={jeu} aria-hidden="true" className={`block ${className}`.trim()}>
       {tiles.map((t, i) => (
         <span key={i} data-tile="" style={{ '--i': i, '--d': t.delay } as CSSProperties}>
           <span data-spin="">
             <span data-flip="">
-              <Face object={t.front} palette={t.p1} />
-              <Face object={t.back} palette={t.p2} back />
+              <Face shapes={objets[t.front]} palette={t.p1} />
+              <Face shapes={objets[t.back]} palette={t.p2} back />
             </span>
           </span>
         </span>
