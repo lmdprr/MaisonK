@@ -10,7 +10,7 @@ Objectif : **aucun frais d'hébergement**.
 |---|---|
 | Framework | Next.js 15 (App Router, TypeScript strict) |
 | Hébergement | Cloudflare Workers via `@opennextjs/cloudflare` |
-| CSS | Tailwind CSS v4, tokens de la maquette dans `app/globals.css` (`@theme` + rôles par `data-fond`) |
+| CSS | Tailwind CSS v4, tokens de la charte dans `app/globals.css` (`@theme` + rôles par `data-fond`) |
 | CMS | `@keystatic/core` + `@keystatic/next`, admin sur `/keystatic` |
 | Contenu | fichiers YAML dans `content/` (committés) |
 | Images | `public/images/**` → miroir Cloudflare R2 + transformations |
@@ -33,8 +33,8 @@ npm run dev
 - Site : http://localhost:3000
 - Admin : http://localhost:3000/keystatic (stockage local, aucune variable GitHub requise)
 
-`/` redirige vers `/accueil`. La page `accueil` est en `status: draft` : passez-la
-en `published` depuis l'admin pour qu'elle s'affiche.
+`/` redirige vers `/accueil`. Seules les pages en `status: published` sont
+rendues ; un brouillon renvoie 404 même en dev.
 
 ### Prévisualiser sur le vrai runtime Cloudflare
 
@@ -140,9 +140,10 @@ d'envoi (`RESEND_FROM_EMAIL`) doit être vérifié dans Resend, sinon l'envoi es
   qu'au build. Toutes les pages de contenu sont donc pré-rendues, et
   `app/(site)/[slug]/page.tsx` déclare `dynamicParams = false` : un slug inconnu
   renvoie 404 sans jamais toucher au serveur.
-- **Pas de jsdom.** `isomorphic-dompurify` a été retiré : il fait planter le Worker
-  (`MessagePort is not defined`). Il était inutile ici — `fields.document` renvoie un
-  arbre structuré rendu par `DocumentRenderer`, jamais du HTML brut.
+- **Pas de jsdom.** Les bibliothèques qui en dépendent (`isomorphic-dompurify` par
+  exemple) font planter le Worker (`MessagePort is not defined`). Aucun assainissement
+  HTML n'est nécessaire ici : `fields.document` renvoie un arbre structuré rendu par
+  `DocumentRenderer`, jamais du HTML brut.
 - **Le layout racine est minimal**, car il sert aussi `/keystatic`. L'en-tête et le
   pied de page vivent dans `app/(site)/layout.tsx`, uniquement sur des routes
   pré-rendues.
@@ -168,13 +169,13 @@ components/
   modules/                     ModuleRenderer + 9 modules de page
   interactive/                 composants clients : HeroSlides, AvantApres, PlancheTeintes, ProjetForm
   decor/                       croquis SVG, papiers peints, quadrilobes, filtre crayon, DecorRuntime
-  ui/                          Section, Heading, SectionHead, ArrowLink, PaintButton, Button, Container
+  ui/                          Section, Container, Heading, SectionHead, Eyebrow, ArrowLink, PaintButton, Pill, Img
 content/
   pages/*.yaml                 une page = un fichier
   projets/*.yaml               collection Réalisations
   prestations/*.yaml           collection Prestations
   global/{header,footer,coordonnees}.yaml  singletons
-docs/plan-modules-keystatic.md plan des modules (schéma, arguments, ordre d'implémentation)
+docs/plan-modules-keystatic.md modèle de contenu (modules, collections, arguments)
 lib/
   keystatic.ts                 reader API (build uniquement)
   links.ts                     résolution des liens (`whatsapp` → wa.me depuis Coordonnées)
@@ -189,7 +190,7 @@ wrangler.jsonc                 configuration du Worker
 
 ## Modules
 
-Neuf modules couvrent toute la maquette (détail et arguments dans
+Neuf modules couvrent l'ensemble du site (détail des champs et arguments dans
 `docs/plan-modules-keystatic.md`) :
 
 | Module | Rôle | Usages |
@@ -215,7 +216,8 @@ Règles communes :
   singleton Coordonnées (`lib/links.ts`) ;
 - Coordonnées est lu une fois par page et transmis à chaque module ;
 - le décor n'est jamais un champ Keystatic : il est assigné par le code selon le module,
-  sa variante ou l'index de l'item (`components/decor/`, détail dans le plan). Trois
+  sa variante ou l'index de l'item (`components/decor/`, tableau d'assignation dans
+  `docs/plan-modules-keystatic.md`, section 6). Trois
   attributs pilotent le runtime client : `data-reveal` (apparition au défilement),
   `data-sketch` (croquis en pause jusqu'à l'entrée dans l'écran), `data-paint` (rouleau
   de peinture sur les boutons). Tout respecte `prefers-reduced-motion` ;

@@ -327,9 +327,9 @@ export default function ProjetForm(props: ProjetFormProps) {
  * Réduit la photo à `PHOTO_MAX_PX` sur son plus grand côté et la ré-encode en
  * JPEG : l'e-mail reste léger et rien n'est stocké côté serveur.
  *
- * `createImageBitmap` décode aussi les HEIC sur Safari, ce qu'un `<img>` ne
- * ferait pas partout. Retourne le blob (pour l'aperçu) et le base64 sans
- * préfixe `data:` (pour la pièce jointe).
+ * `createImageBitmap` décode le fichier sans passer par un `<img>` monté dans
+ * le DOM. Retourne le blob (pour l'aperçu) et le base64 sans préfixe `data:`
+ * (pour la pièce jointe).
  */
 async function resizeImage(file: File): Promise<{ blob: Blob; base64: string }> {
   const bitmap = await createImageBitmap(file)

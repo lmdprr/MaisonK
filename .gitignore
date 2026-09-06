@@ -47,8 +47,7 @@ next-env.d.ts
 .dev.vars
 cloudflare-env.d.ts
 
-# outillage local (IDE, agents, launchers)
-.claude/
+# outillage local
 .vscode/
 .idea/
 
