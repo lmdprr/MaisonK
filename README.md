@@ -234,15 +234,16 @@ Règles communes :
 
 ## Déploiement
 
-1. Créer le Worker et le connecter au dépôt GitHub (Workers Builds), puis
-   remplacer les commandes pré-remplies par le dashboard :
-   - **Build command** : `npm run cf:build`
-   - **Deploy command** : `npm run cf:deploy`
+1. Créer le Worker et le connecter au dépôt GitHub (Workers Builds). Les
+   commandes pré-remplies par le dashboard conviennent :
+   - **Build command** : `npm run build` (build OpenNext + synchronisation R2,
+     ignorée tant que les variables `R2_*` ne sont pas définies)
+   - **Deploy command** : `npx wrangler deploy` (détecte le projet OpenNext et
+     délègue à `opennextjs-cloudflare deploy`)
 
-   Les valeurs par défaut (`npm run build` / `npx wrangler deploy`) ne
-   produisent pas le dossier `.open-next/` et le déploiement échoue avec
-   « Could not find compiled Open Next config ». La synchronisation R2 incluse
-   dans `cf:build` est ignorée tant que les variables `R2_*` ne sont pas définies.
+   `npm run build` produit le Worker, pas seulement le build Next : c'est
+   voulu, pour que le dépôt se déploie sans réglage particulier. Pour un simple
+   contrôle de compilation en local, `npm run build:next` suffit.
 2. Créer le bucket R2, lui associer un domaine public (`cdn.maisonk.fr`).
 3. Activer **Transformations** sur la zone Cloudflare.
 4. Renseigner les variables de `.env.example` dans les paramètres du Worker.
