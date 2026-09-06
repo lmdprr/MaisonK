@@ -24,7 +24,7 @@ export type FormulaireProjetProps = Omit<ModuleFormulaireProjet, 'email_to'> & {
  */
 export default function FormulaireProjet({ coordonnees, confirmation, ...rest }: FormulaireProjetProps) {
   return (
-    <Section module="formulaire_projet" fond="creme" size="medium" padding="none" className="isolate overflow-hidden py-[clamp(56px,8vw,110px)]">
+    <Section module="formulaire_projet" fond="creme" padding="none" className="isolate overflow-hidden pt-section-sm pb-section">
       <Wall variant="seed" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" />
       <ProjetForm {...rest} confirmation={confirmation} confirmationLien={resolveLien(confirmation.lien, coordonnees)} />
     </Section>
