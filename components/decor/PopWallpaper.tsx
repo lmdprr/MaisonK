@@ -36,7 +36,14 @@ interface Shape {
  * - Un objet se lit en une seconde à 60 px, sur les six palettes : la découpe
  *   doit rester visible sur la tuile bordeaux comme sur la tuile sable.
  */
+/*
+ * Vocabulaire mobilier : ce qui a été livré. Chaque type de pièce des projets
+ * (salon, séjour, chambre, cuisine, maison) a au moins un objet qui le nomme ;
+ * plante, cadre et miroir sont transverses. La fleur reste en dernier : la
+ * marche d'ordonnancement l'exclut et la place à intervalle fixe.
+ */
 const OBJECTS: Record<string, Shape[]> = {
+  // Salon
   fauteuil: [
     { d: 'M18 62 v-24 a14 14 0 0 1 14 -14 h36 a14 14 0 0 1 14 14 v24 z' },
     { d: 'M12 58 a6 6 0 0 1 6 -6 h64 a6 6 0 0 1 6 6 v18 h-76 z' },
@@ -49,6 +56,48 @@ const OBJECTS: Record<string, Shape[]> = {
     { d: 'M32 84 a18 6 0 0 1 36 0 z' },
     { d: 'M40 38 h20 v3 h-20 z', k: 'accent' },
   ],
+  suspension: [
+    { d: 'M48 10 h4 v26 h-4 z' },
+    { d: 'M18 66 a32 32 0 0 1 64 0 z' },
+    { d: 'M40 74 a10 10 0 1 0 20 0 a10 10 0 1 0 -20 0 z', k: 'accent' },
+  ],
+  // Séjour : table à pied central, chaise de profil
+  table: [
+    { d: 'M12 40 h76 v8 h-76 z' },
+    { d: 'M46 48 h8 v32 h-8 z' },
+    { d: 'M28 86 a22 8 0 0 1 44 0 z' },
+    { d: 'M36 30 h28 a14 10 0 0 1 -28 0 z', k: 'accent' },
+  ],
+  chaise: [
+    { d: 'M28 12 h12 v44 h-12 z' },
+    { d: 'M28 50 h44 v8 h-44 z' },
+    { d: 'M32 58 h7 v30 h-7 z M63 58 h7 v30 h-7 z' },
+    { d: 'M40 44 h30 v6 h-30 z', k: 'accent' },
+  ],
+  // Chambre
+  lit: [
+    { d: 'M18 54 v-32 a8 8 0 0 1 8 -8 h48 a8 8 0 0 1 8 8 v32 z' },
+    { d: 'M12 54 h76 v18 h-76 z' },
+    { d: 'M16 72 h8 v14 h-8 z M76 72 h8 v14 h-8 z' },
+    { d: 'M26 40 h20 v10 h-20 z M54 40 h20 v10 h-20 z', k: 'accent' },
+    { d: 'M12 60 h76 v3 h-76 z', k: 'bg' },
+  ],
+  // Cuisine : casserole à deux anses, couvercle posé
+  casserole: [
+    { d: 'M24 48 h52 v30 a8 8 0 0 1 -8 8 h-36 a8 8 0 0 1 -8 -8 z' },
+    { d: 'M22 42 h56 v6 h-56 z' },
+    { d: 'M10 52 h14 v6 h-14 z M76 52 h14 v6 h-14 z' },
+    { d: 'M45 32 h10 v10 h-10 z', k: 'accent' },
+    { d: 'M24 64 h52 v4 h-52 z', k: 'bg' },
+  ],
+  // Maison : façade au toit débordant
+  maison: [
+    { d: 'M10 46 L50 12 L90 46 Z' },
+    { d: 'M20 46 h60 v40 h-60 z' },
+    { d: 'M44 62 h12 v24 h-12 z', k: 'accent' },
+    { d: 'M28 54 h10 v10 h-10 z M62 54 h10 v10 h-10 z', k: 'bg' },
+  ],
+  // Transverses
   plante: [
     { d: 'M34 64 h32 l-5 26 h-22 z' },
     { d: 'M50 62 c-24 -6 -30 -30 -20 -46 c16 6 24 28 20 46 z', k: 'accent' },
@@ -65,29 +114,6 @@ const OBJECTS: Record<string, Shape[]> = {
     { d: 'M28 88 v-46 a22 22 0 0 1 44 0 v46 z' },
     { d: 'M36 88 v-46 a14 14 0 0 1 28 0 v46 z', k: 'bg' },
     { d: 'M43 84 v-36 a7 7 0 0 1 7 -7 v43 z', k: 'accent' },
-  ],
-  table: [
-    { d: 'M12 58 h76 v8 h-76 z' },
-    { d: 'M18 66 h7 v22 h-7 z M75 66 h7 v22 h-7 z' },
-    { d: 'M42 58 l-5 -22 a13 13 0 0 1 26 0 l-5 22 z', k: 'accent' },
-    { d: 'M47 36 h6 v-10 h-6 z', k: 'bg' },
-  ],
-  chaise: [
-    { d: 'M30 12 a8 8 0 0 1 8 -8 h24 a8 8 0 0 1 8 8 v44 h-40 z' },
-    { d: 'M38 20 h24 v28 h-24 z', k: 'bg' },
-    { d: 'M24 56 h52 v12 h-52 z' },
-    { d: 'M28 68 h7 v22 h-7 z M65 68 h7 v22 h-7 z' },
-  ],
-  suspension: [
-    { d: 'M48 6 h4 v28 h-4 z' },
-    { d: 'M18 66 a32 32 0 0 1 64 0 z' },
-    { d: 'M40 74 a10 10 0 1 0 20 0 a10 10 0 1 0 -20 0 z', k: 'accent' },
-  ],
-  commode: [
-    { d: 'M14 28 h72 v54 h-72 z' },
-    { d: 'M18 82 h8 v8 h-8 z M74 82 h8 v8 h-8 z' },
-    { d: 'M14 52 h72 v3 h-72 z', k: 'bg' },
-    { d: 'M42 39 h16 v4 h-16 z M42 66 h16 v4 h-16 z', k: 'bg' },
   ],
   fleur: [{ d: FLOWER }],
 }
