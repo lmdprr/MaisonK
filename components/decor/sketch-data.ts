@@ -1,26 +1,38 @@
-import type { Icone, TypePiece } from '@/lib/types'
-
 /**
- * Bibliothèque des croquis au trait, portée telle quelle depuis la maquette v2.
- * Un croquis est une liste d'éléments : traits (`d`) qui se dessinent dans
- * l'ordre des `delay`, ou aplats (`rect`) teintés après coup. Voir Sketch.tsx.
+ * Bibliothèque des croquis au trait.
+ *
+ * Un croquis est une liste d'éléments : traits (`d`, chemin SVG) qui se
+ * dessinent dans l'ordre de leurs `delay`, ou aplats (`rect`) teintés après
+ * coup. Les tracés sont écrits à la main dans le viewBox indiqué pour chaque
+ * famille ; le rendu est assuré par `Sketch.tsx`.
+ *
+ * Pour retoucher un croquis : garder des chemins courts (les longs tracés se
+ * dessinent trop vite avec `pathLength=1`), et échelonner les délais par
+ * 0,2 à 0,3 pour que l'œil suive.
  */
 
+import type { Icone, TypePiece } from '@/lib/types'
+
 export interface SketchStroke {
+  /** Chemin SVG (`d`). */
   d: string
   /** `T` terracotta, sinon bordeaux. */
   c?: 'T' | 'B'
+  /** Épaisseur du trait (défaut 1.5). */
   w?: number
+  /** Départ, en multiples de `--mk-dur`. */
   delay?: number
-  /** Trait fantôme pointillé qui s'efface une fois le trait définitif tracé. */
+  /** Trait de construction pointillé qui s'efface une fois le trait définitif tracé. */
   ghost?: boolean
 }
 
 export interface SketchRect {
+  /** `[x, y, largeur, hauteur]`. */
   rect: [number, number, number, number]
   fill?: string
+  /** Opacité finale (défaut 0.2). */
   tint?: number
-  /** Aplat déjà en place (pas d'animation). */
+  /** Aplat déjà en place, sans animation. */
   fixed?: boolean
   /** Aplat net qui balaie de gauche à droite ; sinon gribouillage. */
   crisp?: boolean
@@ -81,7 +93,11 @@ export const ROOMS: Record<TypePiece, SketchItem[]> = {
   ],
 }
 
-/** Salon du hero, 260 × 150 : mur, canapé, plante ; lampe et cadre sont animés à part. */
+/**
+ * Salon du hero, 260 × 150 : mur, canapé, plante. Lampe et cadre sont des
+ * groupes séparés, déplacés par `MoveGroup` ; les rayons sont de simples
+ * chemins animés dans `HeroSketch`.
+ */
 export const SALON_BASE: SketchItem[] = [
   { rect: [14, 14, 232, 114], fill: '#C07454', tint: 0.09, crisp: true, delay: 1.9 },
   { d: 'M8 128 Q130 125 252 129', w: 1.6 },
@@ -106,10 +122,10 @@ export const PLAN_FLAT: SketchItem[] = [
   { d: 'M34 40 v-10 M82 40 v-10 M34 30 h48 M132 56 v-10 M176 56 v-10 M132 46 h44 M34 96 v-10 M90 96 v-10 M34 86 h56', c: 'T', delay: 1.9, w: 1.2 },
 ]
 
-/** Quadrilobe (fleur) de la marque, 100 × 100. */
+/** Quadrilobe (fleur) de la marque, 100 × 100 : quatre demi-disques autour du centre. */
 export const FLOWER = 'M50 50A50 50 0 0 1 0 0A50 50 0 0 1 50 50ZM50 50A50 50 0 0 1 100 0A50 50 0 0 1 50 50ZM50 50A50 50 0 0 1 100 100A50 50 0 0 1 50 50ZM50 50A50 50 0 0 1 0 100A50 50 0 0 1 50 50Z'
 
-/** Couleurs des trois cartes « Pour qui » et de leur papier peint. */
+/** Couleurs des cartes « Pour qui » (numéro et papier peint), assignées par index modulo 3. */
 export const CELL_COLORS = ['#C07454', '#B08A5A', '#5C6B4F']
 export const CELL_WALLPAPERS = ['feuilles', 'arches', 'treillis'] as const
 export type WallpaperKind = (typeof CELL_WALLPAPERS)[number]
