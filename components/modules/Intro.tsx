@@ -213,7 +213,18 @@ function ContactCards({ coordonnees }: { coordonnees: Coordonnees | null }) {
           <a href={`mailto:${coordonnees.email}`} className={outline}>
             <span className="flex min-w-0 flex-col">
               <span className="text-xs uppercase tracking-[.2em] text-(--fg-muted)">E-mail</span>
-              <span className="mt-1 truncate font-serif text-[22px]">{coordonnees.email}</span>
+              {/* Coupure autorisée avant le @ : dans une colonne étroite, l'adresse reste lisible en deux lignes */}
+              <span className="mt-1 font-serif text-[22px] [overflow-wrap:anywhere]">
+                {coordonnees.email.includes('@') ? (
+                  <>
+                    {coordonnees.email.slice(0, coordonnees.email.indexOf('@'))}
+                    <wbr />
+                    {coordonnees.email.slice(coordonnees.email.indexOf('@'))}
+                  </>
+                ) : (
+                  coordonnees.email
+                )}
+              </span>
             </span>
             <span aria-hidden="true" className="text-2xl">→</span>
           </a>

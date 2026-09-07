@@ -22,7 +22,8 @@ const VARIANTS: Record<NonNullable<Props['variant']>, string> = {
 
 /**
  * Lien fléché « Mon parcours → ». Au survol, l'écart s'ouvre et la flèche
- * s'étire (transform sur le glyphe, pas d'icône SVG).
+ * s'étire (transform sur le glyphe, pas d'icône SVG). Un lien externe porte
+ * « ↗ » à la place : inutile de l'écrire dans le libellé.
  *
  * Largeur `fit-content` : le lien se replie sur son libellé mais accepte le
  * retour à la ligne. En `max-content`, un libellé long élargirait la colonne
@@ -33,10 +34,12 @@ export default function ArrowLink({ label, url, external = false, variant = 'und
   const arrow = (
     <span
       aria-hidden="true"
-      className="inline-block origin-left transition-transform duration-500 ease-[cubic-bezier(.5,0,.2,1)] group-hover:translate-x-1 group-hover:scale-x-[1.4]"
+      className={`inline-block origin-left transition-transform duration-500 ease-[cubic-bezier(.5,0,.2,1)] ${
+        external ? 'group-hover:-translate-y-0.5 group-hover:translate-x-0.5' : 'group-hover:translate-x-1 group-hover:scale-x-[1.4]'
+      }`}
       style={variant === 'italic' ? { fontStyle: 'normal' } : undefined}
     >
-      →
+      {external ? '↗' : '→'}
     </span>
   )
 

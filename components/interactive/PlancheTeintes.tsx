@@ -119,7 +119,7 @@ export function PlancheComposer({ board, isFull, pin, remove, clear }: ComposerP
             {hint}
           </span>
         </p>
-        <div className="flex flex-wrap gap-x-5 gap-y-2.5">
+        <div className="flex flex-wrap gap-x-4 gap-y-3">
           {TINT_FAMILIES.map((fam) => (
             <div key={fam.name} role="group" aria-label={fam.name} className="flex gap-2">
               {fam.items.map((t) => {
@@ -137,7 +137,7 @@ export function PlancheComposer({ board, isFull, pin, remove, clear }: ComposerP
                     aria-label={t.name}
                     aria-pressed={on}
                     title={t.name}
-                    className="size-10 cursor-pointer rounded-full transition-[box-shadow,translate] duration-300 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
+                    className="size-11 cursor-pointer rounded-full transition-[box-shadow,translate] duration-300 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
                     style={{
                       background: t.bg,
                       boxShadow: on ? '0 0 0 2px var(--color-creme), 0 0 0 3.5px var(--color-bordeaux)' : '0 0 0 1px rgb(21 21 21 / .15)',
@@ -207,7 +207,7 @@ export function PlancheComposer({ board, isFull, pin, remove, clear }: ComposerP
             type="button"
             onClick={() => pin(freeItem)}
             disabled={isFull || has(freeItem.id)}
-            className="cursor-pointer whitespace-nowrap border border-encre px-4 py-2.5 text-xs uppercase tracking-[.14em] transition-colors duration-300 hover:bg-encre hover:text-creme disabled:cursor-not-allowed disabled:opacity-40"
+            className="cursor-pointer whitespace-nowrap border border-encre px-4 py-2.5 text-[13px] uppercase tracking-[.14em] transition-colors duration-300 hover:bg-encre hover:text-creme disabled:cursor-not-allowed disabled:opacity-40"
           >
             Épingler
           </button>
@@ -239,7 +239,7 @@ export default function PlancheTeintes({ formUrl = '/votre-projet' }: { formUrl?
         {/* Le bouton reste actif planche vide : le formulaire n'exige pas de planche */}
         <Link
           href={formUrl}
-          className="inline-flex items-center justify-between gap-4 rounded-mk bg-bordeaux px-[22px] py-4 text-xs uppercase tracking-[.14em] text-creme transition-[background-color,translate] duration-300 hover:-translate-y-0.5 hover:bg-bordeaux-2"
+          className="inline-flex items-center justify-between gap-4 rounded-mk bg-bordeaux px-[22px] py-4 text-sm uppercase tracking-[.14em] text-creme transition-[background-color,translate] duration-300 hover:-translate-y-0.5 hover:bg-bordeaux-2"
         >
           <span>{empty ? 'Décrire ma pièce' : 'Décrire ma pièce avec cette planche'}</span>
           <span aria-hidden="true" className="text-lg leading-none">→</span>

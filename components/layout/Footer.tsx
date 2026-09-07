@@ -88,7 +88,7 @@ export default function Footer({ data, header, coordonnees }: Props) {
           <ul className="flex gap-4">
             {(data.legal_links ?? []).map((link) => (
               <li key={`${link.url}-${link.label}`}>
-                <Link href={link.url} className="text-creme/70 transition-colors hover:text-rose-clair">
+                <Link href={link.url} className="inline-block py-1.5 text-creme/70 transition-colors hover:text-rose-clair">
                   {link.label}
                 </Link>
               </li>

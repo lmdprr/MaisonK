@@ -146,7 +146,7 @@ modules:
         titre_accent: Instagram
         couleur_accent: auto
         lien:
-          label: '@maisonk.re ↗'
+          label: '@maisonk.re'
           url: https://instagram.com/maisonk.re
       fond: sable
       fleur: false

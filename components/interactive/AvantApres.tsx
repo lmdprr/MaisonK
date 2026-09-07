@@ -64,7 +64,7 @@ export default function AvantApres({ projets, aide }: Props) {
               i === index ? 'text-bordeaux' : 'opacity-60'
             }`}
           >
-            <span className="font-sans text-xs tracking-[.14em] text-terracotta">{String(i + 1).padStart(2, '0')}</span>
+            <span className="font-sans text-[13px] tracking-[.14em] text-terracotta">{String(i + 1).padStart(2, '0')}</span>
             {p.titre}
             <span
               aria-hidden="true"
@@ -110,11 +110,11 @@ export default function AvantApres({ projets, aide }: Props) {
           </div>
 
           <div className="pointer-events-none absolute bottom-[18px] left-[18px] flex flex-col rounded-mk bg-creme/90 px-4 pb-2 pt-2.5 text-encre">
-            <span className="text-[11px] uppercase tracking-[.2em] text-terracotta">Avant</span>
+            <span className="text-xs uppercase tracking-[.2em] text-terracotta">Avant</span>
             <span className="font-serif text-lg italic">Projet 3D</span>
           </div>
           <div className="pointer-events-none absolute bottom-[18px] right-[18px] flex flex-col items-end rounded-mk bg-bordeaux px-4 pb-2 pt-2.5 text-creme">
-            <span className="text-[11px] uppercase tracking-[.2em] text-rose-clair">Après</span>
+            <span className="text-xs uppercase tracking-[.2em] text-rose-clair">Après</span>
             <span className="font-serif text-lg italic">Réalisé</span>
           </div>
 
@@ -134,8 +134,8 @@ export default function AvantApres({ projets, aide }: Props) {
         </div>
       </div>
 
-      <div className="mt-[clamp(32px,3vw,44px)] grid grid-cols-[auto_1fr] items-start gap-[clamp(16px,3vw,40px)] md:grid-cols-[auto_1fr_auto]">
-        <span className="num pt-2.5">
+      <div className="mt-[clamp(32px,3vw,44px)] grid gap-3 md:grid-cols-[auto_1fr_auto] md:items-start md:gap-[clamp(16px,3vw,40px)]">
+        <span className="num md:pt-2.5">
           {String(index + 1).padStart(2, '0')} / {String(projets.length).padStart(2, '0')}
         </span>
         <div>

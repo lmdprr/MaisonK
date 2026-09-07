@@ -13,7 +13,8 @@ type Props = ModulePrestations & { level: 1 | 2; coordonnees: Coordonnees | null
 /**
  * Liste depuis la collection Prestations. Deux rendus, même source :
  * - `apercu` : accueil, lignes numérotées vers l'ancre de la prestation,
- *   fleur qui éclot dans le coin ;
+ *   fleur qui éclot dans le coin (numéro calé en haut et flèche masquée
+ *   sous `md`, où la largeur manque) ;
  * - `detail` : page Prestations, articles alternés (image ou encart à gauche,
  *   texte à droite, puis l'inverse) avec icône croquis, livrables et durée.
  *
@@ -35,14 +36,14 @@ export default async function Prestations({ en_tete, affichage, prestations, fon
             <li key={p.slug} data-reveal="" data-reveal-delay={`${index * 0.08}s`}>
               <Link
                 href={`/prestations#${p.slug}`}
-                className="group grid grid-cols-[auto_1fr_auto] items-center gap-[clamp(20px,4vw,64px)] border-t border-(--line) py-[clamp(24px,3vw,40px)] transition-[padding-left,color] duration-500 ease-[cubic-bezier(.2,.7,.2,1)] hover:pl-4 hover:text-(--accent)"
+                className="group grid grid-cols-[auto_1fr] items-start gap-[clamp(20px,4vw,64px)] md:grid-cols-[auto_1fr_auto] md:items-center border-t border-(--line) py-[clamp(24px,3vw,40px)] transition-[padding-left,color] duration-500 ease-[cubic-bezier(.2,.7,.2,1)] hover:pl-4 hover:text-(--accent)"
               >
-                <span className="num w-8">{String(index + 1).padStart(2, '0')}</span>
+                <span className="num w-8 pt-2 md:pt-0">{String(index + 1).padStart(2, '0')}</span>
                 <span>
                   <h3 className="text-[clamp(24px,2.6vw,40px)]">{p.titre}</h3>
                   {p.accroche && <p className="mt-2 max-w-[60ch] text-base text-(--fg-2)">{p.accroche}</p>}
                 </span>
-                <span aria-hidden="true" className="inline-block origin-left text-2xl text-(--num) transition-transform duration-500 group-hover:translate-x-1 group-hover:scale-x-[1.4]">
+                <span aria-hidden="true" className="hidden origin-left text-2xl text-(--num) md:inline-block transition-transform duration-500 group-hover:translate-x-1 group-hover:scale-x-[1.4]">
                   →
                 </span>
               </Link>

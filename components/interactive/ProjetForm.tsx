@@ -228,7 +228,7 @@ export default function ProjetForm(props: ProjetFormProps) {
               <button
                 type="button"
                 onClick={() => setBoardEditing(false)}
-                className="cursor-pointer self-start border border-encre px-5 py-[11px] text-xs uppercase tracking-[.14em] transition-colors duration-300 hover:bg-encre hover:text-creme"
+                className="cursor-pointer self-start border border-encre px-5 py-[11px] text-[13px] uppercase tracking-[.14em] transition-colors duration-300 hover:bg-encre hover:text-creme"
               >
                 Terminer ma planche
               </button>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Image from '@/components/ui/Img'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -20,6 +20,8 @@ interface Props {
  * et le numéro se replie en pictogramme, toujours visible à côté du burger.
  *
  * Composant client uniquement pour l'état du menu mobile et `usePathname`.
+ * Menu ouvert : Échap et un toucher hors de l'en-tête le ferment, et la page
+ * ne défile plus derrière.
  * Le point de rupture est en `min-[1000px]` plutôt qu'un breakpoint Tailwind :
  * c'est la largeur à partir de laquelle cinq liens tiennent sur une ligne.
  * Le numéro en clair demande 130 px de plus : sous 1150 px, seul le pictogramme reste.
@@ -27,6 +29,26 @@ interface Props {
 export default function Header({ data, coordonnees }: Props) {
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
+  const headerRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    if (!open) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false)
+    }
+    const onPointer = (e: PointerEvent) => {
+      if (!headerRef.current?.contains(e.target as Node)) setOpen(false)
+    }
+    document.addEventListener('keydown', onKey)
+    document.addEventListener('pointerdown', onPointer)
+    const overflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.removeEventListener('pointerdown', onPointer)
+      document.body.style.overflow = overflow
+    }
+  }, [open])
 
   // Singleton absent ou illisible : on garde la hauteur pour ne pas décaler la page.
   if (!data) {
@@ -48,6 +70,7 @@ export default function Header({ data, coordonnees }: Props) {
 
   return (
     <header
+      ref={headerRef}
       data-component="Header"
       className="sticky top-0 z-50 border-b border-encre/8 bg-creme/86 backdrop-blur-[14px]"
     >
@@ -91,7 +114,7 @@ export default function Header({ data, coordonnees }: Props) {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={telephone ? `WhatsApp, ${telephone}` : 'WhatsApp'}
-                className="flex items-center gap-2.5 whitespace-nowrap text-[15px] tracking-[.02em] transition-colors hover:text-bordeaux"
+                className="-m-3 flex min-h-11 items-center gap-2.5 whitespace-nowrap p-3 text-[15px] tracking-[.02em] transition-colors hover:text-bordeaux"
               >
                 <BulleIcone />
                 {telephone && <span className="hidden min-[1150px]:inline">{telephone}</span>}
@@ -110,6 +133,7 @@ export default function Header({ data, coordonnees }: Props) {
               onClick={() => setOpen((v) => !v)}
               aria-label="Menu"
               aria-expanded={open}
+              aria-controls="menu-mobile"
               className="flex size-11 flex-col justify-center gap-1.5 p-2 min-[1000px]:hidden"
             >
               <span className={`block h-[1.5px] bg-encre transition-transform duration-400 ${open ? 'translate-y-[3.75px] rotate-45' : ''}`} />
@@ -120,7 +144,7 @@ export default function Header({ data, coordonnees }: Props) {
       </Container>
 
       {open && (
-        <div className="border-t border-encre/8 min-[1000px]:hidden">
+        <div id="menu-mobile" className="border-t border-encre/8 min-[1000px]:hidden">
           <Container>
             <div className="flex flex-col gap-1.5 pb-8 pt-3">
               {links.map((link) => (

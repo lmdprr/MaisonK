@@ -221,6 +221,9 @@
   .prose-mk h3 + * {
     margin-top: 12px;
   }
+  .prose-mk h1 + h2 {
+    margin-top: 32px;
+  }
   .prose-mk ul,
   .prose-mk ol {
     margin-top: 12px;

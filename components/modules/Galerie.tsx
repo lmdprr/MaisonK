@@ -83,7 +83,7 @@ export default async function Galerie({ en_tete, fond, fleur, source, affichage,
                 </div>
               )}
               <RoomSketch kind={p.type_piece} className="mt-4 h-14 w-24" />
-              <div className="mt-2 flex items-baseline justify-between gap-3">
+              <div className="mt-2 flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-3">
                 <h3>{p.titre}</h3>
                 {p.lieu && <span className="text-[13px] uppercase tracking-[.12em] text-(--fg-muted)">{p.lieu}</span>}
               </div>
@@ -120,7 +120,7 @@ export default async function Galerie({ en_tete, fond, fleur, source, affichage,
             return (
               <li key={`${index}-${img.image}`}>
                 {img.url ? (
-                  <a href={img.url} target="_blank" rel="noopener noreferrer">
+                  <a href={img.url} target="_blank" rel="noopener noreferrer" aria-label={img.alt || 'Voir sur Instagram'}>
                     {tile}
                   </a>
                 ) : (
@@ -148,7 +148,7 @@ export default async function Galerie({ en_tete, fond, fleur, source, affichage,
                   <Image src={p.image_apres} alt={p.titre} fill sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw" className={ZOOM} />
                 </div>
               )}
-              <div className="mt-3.5 flex items-baseline justify-between gap-3">
+              <div className="mt-3.5 flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-3">
                 <h3 className="text-xl">{p.titre}</h3>
                 {p.lieu && <span className="text-[13px] uppercase tracking-[.12em] text-(--fg-muted)">{p.lieu}</span>}
               </div>

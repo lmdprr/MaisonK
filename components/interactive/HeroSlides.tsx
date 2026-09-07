@@ -125,7 +125,7 @@ export default function HeroSlides({ eyebrow, titre, texte, bouton, citation, li
             </div>
             <figcaption className="flex flex-col gap-3 pt-3.5 text-encre lg:absolute lg:inset-x-0 lg:bottom-0 lg:flex-row lg:items-end lg:justify-between lg:gap-4 lg:bg-gradient-to-t lg:from-encre/55 lg:to-transparent lg:px-[26px] lg:py-[22px] lg:text-creme">
               <div>
-                <p className="text-xs uppercase tracking-[.2em] opacity-85">
+                <p className="text-[13px] uppercase tracking-[.2em] opacity-85">
                   {String(index + 1).padStart(2, '0')} / {total}
                   {active?.libelle ? ` · ${active.libelle}` : ''}
                 </p>
