@@ -181,12 +181,17 @@ function ContactCards({ coordonnees }: { coordonnees: Coordonnees | null }) {
     <ul data-component="ContactCards" className="mt-10 flex w-full max-w-[440px] flex-col gap-3.5">
       {wa && (
         <li>
-          <a href={wa} target="_blank" rel="noopener noreferrer" className={`${card} bg-bordeaux text-creme hover:-translate-y-0.5`}>
+          <a
+            href={wa}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`${card} bg-bordeaux text-creme [--mk-b:0] [--mk-d:0] hover:-translate-y-0.5 hover:[--mk-b:1] hover:[--mk-d:1]`}
+          >
             <span className="flex flex-col">
               <span className="text-xs uppercase tracking-[.2em] opacity-80">WhatsApp</span>
               <span className="mt-1 font-serif text-2xl">Écrire à Carole</span>
             </span>
-            <span aria-hidden="true" className="text-2xl">→</span>
+            <BulleWhatsApp />
           </a>
         </li>
       )}
@@ -213,6 +218,44 @@ function ContactCards({ coordonnees }: { coordonnees: Coordonnees | null }) {
         </li>
       )}
     </ul>
+  )
+}
+
+/**
+ * Bulle de message qui se dessine au survol de la carte WhatsApp : le contour
+ * suit `--mk-b` (dashoffset), puis les trois points sauge surgissent l'un
+ * après l'autre via `--mk-d`. Les deux variables passent de 0 à 1 sur le
+ * `hover` du lien parent.
+ */
+function BulleWhatsApp() {
+  const point = {
+    transformBox: 'fill-box',
+    transformOrigin: 'center',
+    transform: 'scale(var(--mk-d))',
+  } as const
+  const pop = (delay: string) => ({ ...point, transition: `transform .3s cubic-bezier(.3,0,.2,1.4) ${delay}` })
+
+  return (
+    <span aria-hidden="true" className="relative block h-9 w-11 shrink-0">
+      <svg viewBox="0 0 44 36" className="absolute inset-0 size-full overflow-visible">
+        <path
+          d="M6 5 q-3 0 -3 3 v14 q0 3 3 3 h6 l-2 7 l9 -7 h18 q3 0 3 -3 v-14 q0 -3 -3 -3 z"
+          pathLength={1}
+          className="fill-none stroke-creme"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{
+            strokeDasharray: 1,
+            strokeDashoffset: 'calc(1 - var(--mk-b))',
+            transition: 'stroke-dashoffset .6s cubic-bezier(.45,0,.3,1)',
+          }}
+        />
+        <circle cx="14" cy="15" r="1.8" className="fill-sauge" style={pop('.45s')} />
+        <circle cx="22" cy="15" r="1.8" className="fill-sauge" style={pop('.6s')} />
+        <circle cx="30" cy="15" r="1.8" className="fill-sauge" style={pop('.75s')} />
+      </svg>
+    </span>
   )
 }
 

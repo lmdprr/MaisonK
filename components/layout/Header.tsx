@@ -82,7 +82,7 @@ export default function Header({ data, coordonnees }: Props) {
 
           {cta && (
             <div className="hidden min-[1000px]:block">
-              <PaintButton {...cta} dot className="!px-[22px] !py-3" />
+              <PaintButton {...cta} className="!px-[22px] !py-3" />
             </div>
           )}
 

@@ -9,8 +9,6 @@ interface Props {
   variant?: 'bordeaux' | 'encre' | 'outline'
   /** `lg` pour le bandeau CTA. */
   size?: 'md' | 'lg'
-  /** Point vert « disponible » avant le label (CTA du header). */
-  dot?: boolean
   className?: string
 }
 
@@ -34,7 +32,7 @@ const SIZES: Record<NonNullable<Props['size']>, string> = {
  * variables `--mk-rx` / `--mk-ry` / `--mk-ro`, écrites par DecorRuntime sur
  * tout élément `[data-paint]`.
  */
-export default function PaintButton({ label, url, external = false, variant = 'bordeaux', size = 'md', dot = false, className = '' }: Props) {
+export default function PaintButton({ label, url, external = false, variant = 'bordeaux', size = 'md', className = '' }: Props) {
   const classes = `relative isolate inline-flex items-center gap-2.5 overflow-hidden rounded-full uppercase whitespace-nowrap transition-transform duration-300 hover:-translate-y-0.5 ${VARIANTS[variant]} ${SIZES[size]} ${className}`.trim()
   const content = (
     <>
@@ -60,7 +58,6 @@ export default function PaintButton({ label, url, external = false, variant = 'b
           <path d="M25 12 l3 -1 M4 15.5 l-1 2.5" fill="none" stroke="#C07454" strokeWidth="1.3" strokeLinecap="round" />
         </svg>
       </span>
-      {dot && <span aria-hidden="true" className="relative inline-block size-2 rounded-full bg-sauge" />}
       <span className="relative">{label}</span>
     </>
   )

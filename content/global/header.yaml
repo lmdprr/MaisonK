@@ -11,5 +11,5 @@ navigation_links:
   - label: Votre projet
     url: /votre-projet
 cta:
-  label: Me contacter
+  label: Obtenir mon rendez-vous
   url: /contact
