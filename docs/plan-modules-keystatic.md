@@ -208,7 +208,7 @@ jamais exposée au client (voir README, « Formulaires »).
 
 Hors schéma, dans le code :
 
-- **Planche de teintes** : sélecteur teinte / clarté / hex + 6 matières (textures CSS).
+- **Planche de teintes** : palette curatée de 18 teintes nommées (4 familles) + 8 matières (textures CSS) + couleur libre repliée.
   Bibliothèque fixe. L'état est persisté en `localStorage` pour survivre à la
   navigation entre la page Prestations (encart) et le formulaire. La planche est
   envoyée dans l'e-mail sous forme de liste « nom · hex ».
@@ -278,7 +278,7 @@ c'est du contenu (quelle prestation porte la planche), pas du style.
 | Bouton rouleau de peinture, lien fléché, eyebrow, pilule | `components/ui` | primitives réutilisées par tous les modules |
 | Croquis SVG (icônes, pièces, plan 3D), papiers peints, bandes de mur, filtre crayon, motif.png | `components/decor` | décoration pure, assignée par module / variante / index |
 | Animations reveal, marquee, fade | CSS + `DecorRuntime` | respectent `prefers-reduced-motion` |
-| Textures des 6 matières de la planche | `lib/planche.ts` | ce sont des dégradés CSS, pas des images |
+| Palette et textures des 8 matières de la planche | `lib/planche.ts` | ce sont des dégradés CSS, pas des images |
 
 Assignation du décor par module :
 

@@ -1,14 +1,14 @@
 'use client'
 
-import { useEffect, useId, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import ArrowLink from '@/components/ui/ArrowLink'
 import Eyebrow from '@/components/ui/Eyebrow'
 import Heading from '@/components/ui/Heading'
 import { submitProjet } from '@/app/actions/submitProjet'
-import { TILTS, plancheSummary } from '@/lib/planche'
+import { plancheSummary } from '@/lib/planche'
 import type { Icone, Lien } from '@/lib/types'
-import { PlancheComposer } from './PlancheTeintes'
+import { PlancheBoard, PlancheComposer } from './PlancheTeintes'
 import { usePlanche } from './usePlanche'
 
 export interface ProjetFormProps {
@@ -66,6 +66,7 @@ export default function ProjetForm(props: ProjetFormProps) {
   const [email, setEmail] = useState('')
   /** Composeur de planche ouvert dans la colonne gauche. */
   const [boardEditing, setBoardEditing] = useState(false)
+  const asideRef = useRef<HTMLDivElement>(null)
   const [sending, setSending] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [sent, setSent] = useState(false)
@@ -92,6 +93,13 @@ export default function ProjetForm(props: ProjetFormProps) {
     } catch {
       setPhotoError("Impossible de lire cette photo. Essayez un autre fichier.")
     }
+  }
+
+  // Ouvre le composeur et l'amène à l'écran : depuis le formulaire, la colonne
+  // est au-dessus en mobile et peut être hors champ.
+  const openBoard = () => {
+    setBoardEditing(true)
+    asideRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
   const clearPhoto = () => {
@@ -163,58 +171,46 @@ export default function ProjetForm(props: ProjetFormProps) {
 
   return (
     <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] items-start gap-[clamp(40px,6vw,96px)]">
-      {/* Colonne gauche, sticky : intro + planche (résumé, composeur ou invitation) */}
-      <div className="md:sticky md:top-24">
+      {/* Colonne gauche : intro + planche (toujours visible, composeur au clic).
+          Sticky pour suivre le formulaire, sauf composeur ouvert : la colonne
+          dépasserait l'écran et la planche sortirait du champ. En flux normal,
+          planche et palette restent côte à côte pendant qu'on compose. */}
+      <div ref={asideRef} className={`scroll-mt-24 ${boardEditing ? '' : 'md:sticky md:top-24'}`}>
         {eyebrow && <Eyebrow icone={icone} className="mb-[22px]">{eyebrow}</Eyebrow>}
         <Heading level={level} className="text-[clamp(40px,4.6vw,68px)] leading-[1.04]">
           {titre}
         </Heading>
-        {intro && <p className="lead mt-7 max-w-[44ch]">{intro}</p>}
+        {/* L'intro cède la place au composeur ouvert : la colonne doit tenir à l'écran. */}
+        {intro && !boardEditing && <p className="lead mt-7 max-w-[44ch]">{intro}</p>}
 
-        {boardEditing ? (
-          <div className="mt-10 flex flex-col gap-[22px]">
-            <div className="flex items-baseline justify-between gap-4">
-              <p className="text-xs uppercase tracking-[.18em] text-(--fg-muted)">Composez votre planche</p>
-              <button type="button" onClick={() => setBoardEditing(false)} className="cursor-pointer border-b border-bordeaux/40 text-[13px] text-bordeaux">
-                Terminer
+        <div className="mt-10 flex flex-col gap-5">
+          {boardEditing ? (
+            <>
+              <PlancheComposer {...planche} />
+              <button
+                type="button"
+                onClick={() => setBoardEditing(false)}
+                className="cursor-pointer self-start border border-encre px-5 py-[11px] text-xs uppercase tracking-[.14em] transition-colors duration-300 hover:bg-encre hover:text-creme"
+              >
+                Terminer ma planche
               </button>
-            </div>
-            <PlancheComposer board={planche.board} isFull={planche.isFull} pin={planche.pin} remove={planche.remove} pinLabel="Choisir la teinte" />
-          </div>
-        ) : planche.board.length > 0 ? (
-          <div className="mt-10 flex flex-col gap-3">
-            <div className="flex items-baseline justify-between gap-4">
-              <p className="text-xs uppercase tracking-[.18em] text-(--fg-muted)">Votre planche</p>
-              <button type="button" onClick={() => setBoardEditing(true)} className="cursor-pointer border-b border-bordeaux/40 text-[13px] text-bordeaux">
-                Modifier
+            </>
+          ) : (
+            <>
+              <PlancheBoard board={planche.board} remove={planche.remove} clear={planche.clear} />
+              <button
+                type="button"
+                onClick={openBoard}
+                className="inline-flex w-max max-w-full cursor-pointer items-center gap-3 border-b border-bordeaux/40 pb-0.5 text-left font-serif text-[17px] italic text-bordeaux"
+              >
+                {planche.board.length > 0 ? 'Modifier ma planche' : 'Composer ma planche de teintes'} <span aria-hidden="true" className="not-italic">→</span>
               </button>
-            </div>
-            <div className="flex flex-wrap gap-3">
-              {planche.board.map((p, i) => (
-                <button
-                  key={p.id}
-                  type="button"
-                  onClick={() => planche.remove(p.id)}
-                  title="Retirer"
-                  aria-label={`Retirer ${p.name}`}
-                  className="relative size-[72px] cursor-pointer rounded-mk shadow-[0_6px_14px_-6px_rgb(21_21_21/.5)] transition-transform duration-300 hover:scale-[.96]"
-                  style={{ background: p.bg, transform: TILTS[i] }}
-                >
-                  <span aria-hidden="true" className="absolute -top-[5px] left-1/2 size-2 -translate-x-1/2 rounded-full bg-bordeaux" />
-                </button>
-              ))}
-            </div>
-            <p className="font-serif text-base italic text-bordeaux">{planche.board.map((x) => x.name).join(' · ')}</p>
-          </div>
-        ) : (
-          <button
-            type="button"
-            onClick={() => setBoardEditing(true)}
-            className="mt-10 inline-flex w-max max-w-full cursor-pointer items-center gap-3 border-b border-bordeaux/40 pb-0.5 text-left font-serif text-[17px] italic text-bordeaux"
-          >
-            Envie de composer d’abord votre planche de teintes ? <span aria-hidden="true" className="not-italic">→</span>
-          </button>
-        )}
+              <p className="text-[13px] leading-[1.45] text-(--fg-muted)">
+                {planche.board.length > 0 ? 'Elle sera jointe à votre demande.' : 'Facultatif : vos teintes et matières préférées, jointes à votre demande.'}
+              </p>
+            </>
+          )}
+        </div>
       </div>
 
       {/* Colonne droite : formulaire ou confirmation */}
@@ -268,6 +264,13 @@ export default function ProjetForm(props: ProjetFormProps) {
             {moods.includes(AUTRE) && (
               <input className="field max-w-[360px] py-2.5 text-[15px]" type="text" placeholder="Votre mot à vous" value={moodOther} onChange={(e) => setMoodOther(e.target.value)} />
             )}
+            <p className="text-[13px] leading-[1.45] text-(--fg-muted)">
+              Des teintes ou matières en tête ?{' '}
+              <button type="button" onClick={openBoard} className="cursor-pointer border-b border-bordeaux/40 text-bordeaux">
+                Épinglez-les sur votre planche
+              </button>
+              .
+            </p>
           </fieldset>
 
           {photo_activee && (

@@ -329,35 +329,46 @@ input[type='range'].mk-ba::-moz-range-track {
   background: transparent;
 }
 
-/* Curseurs teinte / clarté de la planche */
-input[type='range'].mk-slider {
+/* Planche : sélecteur de couleur libre, rendu comme une pastille */
+input[type='color'].mk-color {
   -webkit-appearance: none;
   appearance: none;
-  width: 100%;
-  height: 14px;
-  margin: 0;
-  border-radius: 7px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
   cursor: pointer;
+  box-shadow: 0 0 0 1px rgb(21 21 21 / 0.15);
 }
-input[type='range'].mk-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: var(--color-creme);
-  border: 2px solid var(--color-bordeaux);
-  box-shadow: 0 1px 4px rgb(21 21 21 / 0.3);
+input[type='color'].mk-color::-webkit-color-swatch-wrapper {
+  padding: 0;
 }
-input[type='range'].mk-slider::-moz-range-thumb {
-  width: 22px;
-  height: 22px;
+input[type='color'].mk-color::-webkit-color-swatch,
+input[type='color'].mk-color::-moz-color-swatch {
+  border: 0;
   border-radius: 50%;
-  background: var(--color-creme);
-  border: 2px solid var(--color-bordeaux);
+}
+
+/* Planche : la pièce arrive sur le liège */
+@keyframes mk-pin {
+  from {
+    opacity: 0;
+    transform: scale(0.82) translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.mk-pin {
+  animation: mk-pin 0.35s cubic-bezier(0.2, 0.8, 0.3, 1) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .fadein {
+  .fadein,
+  .mk-pin {
     animation: none;
   }
 }

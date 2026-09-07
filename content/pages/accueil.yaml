@@ -136,7 +136,7 @@ modules:
     value:
       en_tete:
         icone: aucune
-        titre: Suivez les coulisses
+        titre: Suivez Carole sur les réseaux
         lien:
           label: '@maisonk.re ↗'
           url: https://instagram.com/maisonk.re

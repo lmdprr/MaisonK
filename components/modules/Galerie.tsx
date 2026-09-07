@@ -43,7 +43,7 @@ export default async function Galerie({ en_tete, fond, source, affichage, texte_
 
   if (affichage === 'comparateur') {
     return (
-      <Section module="galerie" fond={fond} size="grid" padding="none" className="isolate pb-[clamp(40px,5vw,64px)]">
+      <Section module="galerie" fond={fond} size="grid" padding="none" className="isolate pt-[clamp(40px,5vw,64px)]">
         {marges}
         <SectionHead data={en_tete} level={level} coordonnees={coordonnees} />
         <AvantApres
