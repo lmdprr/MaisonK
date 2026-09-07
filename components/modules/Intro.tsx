@@ -144,7 +144,7 @@ export default function Intro({
                     }`}
                   >
                     {isPortrait ? (
-                      <Image src={image.image} alt={image.alt ?? ''} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-contain object-bottom p-[6%] pb-0" />
+                      <Image src={image.image} alt={image.alt ?? ''} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-contain object-right-bottom pl-[6%] pt-[6%]" />
                     ) : (
                       <Image src={image.image} alt={image.alt ?? ''} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
                     )}
