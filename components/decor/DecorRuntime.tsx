@@ -157,11 +157,11 @@ export default function DecorRuntime() {
     /** Ajoute une trace de rouleau, et parfois une éclaboussure à côté. */
     const stamp = (layer: HTMLElement, x: number, y: number) => {
       const d = document.createElement('span')
-      d.style.cssText = `position:absolute;left:${x - 12}px;top:${y - 13}px;width:24px;height:26px;border-radius:5px;transform:rotate(-18deg);background:#C07454 repeating-linear-gradient(90deg,rgba(237,234,228,.09) 0 1px,transparent 1px 4px,rgba(85,16,32,.07) 4px 5px,transparent 5px 9px)`
+      d.style.cssText = `position:absolute;left:${x - 17}px;top:${y - 16}px;width:34px;height:32px;border-radius:8px;transform:rotate(-18deg);background:#C07454 repeating-linear-gradient(90deg,rgba(237,234,228,.09) 0 1px,transparent 1px 4px,rgba(85,16,32,.07) 4px 5px,transparent 5px 9px)`
       layer.appendChild(d)
       if (Math.random() < 0.22) {
-        const sx = Math.round((Math.random() - 0.5) * 50)
-        const sy = Math.round((Math.random() - 0.5) * 36)
+        const sx = Math.round((Math.random() - 0.5) * 64)
+        const sy = Math.round((Math.random() - 0.5) * 44)
         const ss = 2 + Math.round(Math.random() * 3)
         const o = document.createElement('span')
         o.style.cssText = `position:absolute;left:${x + sx}px;top:${y + sy}px;width:${ss}px;height:${ss}px;border-radius:50%;background:${ss > 3 ? 'rgba(85,16,32,.45)' : '#C07454'};opacity:.9`
@@ -185,6 +185,9 @@ export default function DecorRuntime() {
       if (prev && Math.hypot(x - prev.x, y - prev.y) < 5) return
       const n = (prev?.n ?? 0) + 1
       last.set(el, { x, y, n })
+      // Couverture approximative (0→1), lue par le libellé pour s'éclaircir à
+      // mesure que la terracotta gagne sur le fond sombre.
+      el.style.setProperty('--mk-pc', String(Math.min(1, n / 80)))
       if (n > 700) return
       const layer = el.querySelector<HTMLElement>('[data-paint-layer]')
       if (layer) stamp(layer, x, y)

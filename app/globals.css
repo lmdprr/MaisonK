@@ -563,10 +563,3 @@ input[type='color'].mk-color::-moz-color-swatch {
     animation: none;
   }
 }
-
-/* Le rouleau remplace le curseur sur les boutons, uniquement avec une vraie souris */
-@media (hover: hover) and (pointer: fine) {
-  [data-paint]:hover {
-    cursor: none;
-  }
-}

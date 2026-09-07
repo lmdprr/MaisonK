@@ -24,13 +24,15 @@ const SIZES: Record<NonNullable<Props['size']>, string> = {
 }
 
 /**
- * Bouton principal (pilule). À la souris, un rouleau de peinture suit le
- * curseur et laisse des traces terracotta dans la couche `[data-paint-layer]`.
- * Au tactile, c'est une pilule ordinaire.
+ * Bouton principal (pilule). À la souris, un rouleau de peinture accompagne le
+ * curseur (qui reste visible : c'est lui qui dit « cliquable ») et laisse des
+ * traces terracotta dans la couche `[data-paint-layer]`. Au tactile, c'est une
+ * pilule ordinaire.
  *
  * Le composant reste serveur : la position du rouleau est pilotée par les
- * variables `--mk-rx` / `--mk-ry` / `--mk-ro`, écrites par DecorRuntime sur
- * tout élément `[data-paint]`.
+ * variables `--mk-rx` / `--mk-ry` / `--mk-ro`, et `--mk-pc` (couverture 0→1)
+ * blanchit le libellé et lui donne un halo bordeaux pour qu'il reste lisible
+ * sur la terracotta. Toutes sont écrites par DecorRuntime sur `[data-paint]`.
  */
 export default function PaintButton({ label, url, external = false, variant = 'bordeaux', size = 'md', className = '' }: Props) {
   const classes = `relative isolate inline-flex items-center gap-2.5 overflow-hidden rounded-full uppercase whitespace-nowrap transition-transform duration-300 hover:-translate-y-0.5 ${VARIANTS[variant]} ${SIZES[size]} ${className}`.trim()
@@ -42,11 +44,12 @@ export default function PaintButton({ label, url, external = false, variant = 'b
         {/* Le rouleau : invisible (--mk-ro: 0) tant que la souris n'est pas dessus */}
         <svg
           viewBox="0 0 30 30"
-          className="absolute size-[30px]"
+          className="absolute size-[42px]"
           style={{
-            left: 'var(--mk-rx,-40px)',
+            left: 'var(--mk-rx,-60px)',
             top: 'var(--mk-ry,50%)',
-            transform: 'translate(-50%,-50%) rotate(-18deg)',
+            // La tête du rouleau (et non le centre du SVG) est calée sur le curseur
+            transform: 'translate(-47%,-32%) rotate(-18deg)',
             opacity: 'var(--mk-ro,0)',
             transition: 'opacity .25s',
             filter: 'drop-shadow(0 2px 4px rgba(21,21,21,.25))',
@@ -58,7 +61,15 @@ export default function PaintButton({ label, url, external = false, variant = 'b
           <path d="M25 12 l3 -1 M4 15.5 l-1 2.5" fill="none" stroke="#C07454" strokeWidth="1.3" strokeLinecap="round" />
         </svg>
       </span>
-      <span className="relative">{label}</span>
+      <span
+        className="relative"
+        style={{
+          color: 'color-mix(in srgb, #fff calc(var(--mk-pc, 0) * 100%), currentColor)',
+          textShadow: '0 1px 2px rgb(85 16 32 / calc(var(--mk-pc, 0) * .6))',
+        }}
+      >
+        {label}
+      </span>
     </>
   )
 
