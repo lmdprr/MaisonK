@@ -40,6 +40,12 @@ const vars = (style: Record<string, string>) => style as CSSProperties
  * repart de zéro), mise en pause quand l'onglet est caché, désactivée en
  * `prefers-reduced-motion`. Les images sont toutes montées et superposées ;
  * seule l'opacité change, pour éviter un rechargement à chaque passage.
+ *
+ * Disposition : titre, image, puis texte et bouton, dans cet ordre. Sous
+ * `lg` ils s'empilent, la photo arrive donc juste sous le titre et la légende
+ * passe sous l'image. À partir de `lg`, grille à deux colonnes : la figure
+ * occupe la colonne droite sur les deux rangs, le titre et le texte se
+ * rejoignent au milieu de la colonne gauche, la légende revient en surimpression.
  */
 export default function HeroSlides({ eyebrow, titre, texte, bouton, citation, lien, slides, autoplay }: Props) {
   const [index, setIndex] = useState(0)
@@ -76,8 +82,11 @@ export default function HeroSlides({ eyebrow, titre, texte, bouton, citation, li
   }
 
   return (
-    <div data-autoplay={autoplay} className="flex min-h-[min(calc(82vh-76px),760px)] flex-wrap items-stretch">
-      <div className="flex flex-1 basis-[380px] flex-col justify-center py-[clamp(32px,5vh,72px)] pr-[clamp(0px,4vw,64px)]">
+    <div
+      data-autoplay={autoplay}
+      className="flex min-h-[min(calc(82vh-76px),760px)] flex-col lg:grid lg:grid-cols-2 lg:content-center lg:gap-x-[clamp(24px,4vw,64px)]"
+    >
+      <div className="pt-[clamp(24px,4vh,72px)] lg:self-end lg:pt-[clamp(32px,5vh,72px)]">
         {eyebrow && <Eyebrow line className="mb-[26px]">{eyebrow}</Eyebrow>}
         <h1>
           {titre}
@@ -91,6 +100,64 @@ export default function HeroSlides({ eyebrow, titre, texte, bouton, citation, li
             </>
           )}
         </h1>
+      </div>
+
+      {slides.length > 0 && (
+        <div className="mt-8 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:mt-0 lg:self-center lg:py-[clamp(20px,4vh,48px)]">
+          <figure className="relative mx-auto w-full max-w-[544px]">
+            <div className="relative aspect-[4/5] w-full max-h-[min(70vh,680px)] overflow-hidden rounded-mk bg-sable">
+              {slides.map((s, i) =>
+                s.image ? (
+                  <Image
+                    key={`${i}-${s.image}`}
+                    src={s.image}
+                    alt={s.alt ?? ''}
+                    fill
+                    sizes="(min-width: 1024px) 50vw, 100vw"
+                    priority={i === 0}
+                    // Fondu de 1,4 s ; le zoom lent (7 s) court pendant toute la durée d'affichage
+                    className={`object-cover transition-[opacity,scale] duration-[1400ms,7000ms] ease-[cubic-bezier(.4,0,.2,1),linear] ${
+                      i === index ? 'scale-[1.06] opacity-100' : 'scale-100 opacity-0'
+                    }`}
+                  />
+                ) : null
+              )}
+            </div>
+            <figcaption className="flex flex-col gap-3 pt-3.5 text-encre lg:absolute lg:inset-x-0 lg:bottom-0 lg:flex-row lg:items-end lg:justify-between lg:gap-4 lg:bg-gradient-to-t lg:from-encre/55 lg:to-transparent lg:px-[26px] lg:py-[22px] lg:text-creme">
+              <div>
+                <p className="text-xs uppercase tracking-[.2em] opacity-85">
+                  {String(index + 1).padStart(2, '0')} / {total}
+                  {active?.libelle ? ` · ${active.libelle}` : ''}
+                </p>
+                {active?.legende && <p className="mt-1.5 font-serif text-xl italic">{active.legende}</p>}
+              </div>
+              {slides.length > 1 && (
+                <div className="flex gap-2 lg:-my-5">
+                  {slides.map((s, i) => (
+                    // La zone tactile fait 42 px de haut ; le trait visible garde ses 2 px
+                    <button
+                      key={`${i}-${s.ligne_titre}`}
+                      type="button"
+                      onClick={() => go(i)}
+                      aria-label={s.libelle || `Image ${i + 1}`}
+                      aria-current={i === index}
+                      className="w-[34px] cursor-pointer py-5"
+                    >
+                      <span
+                        className={`block h-0.5 w-full transition-colors duration-500 ${
+                          i === index ? 'bg-encre lg:bg-creme' : 'bg-encre/25 hover:bg-encre/60 lg:bg-creme/35 lg:hover:bg-creme/70'
+                        }`}
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </figcaption>
+          </figure>
+        </div>
+      )}
+
+      <div className="pb-[clamp(32px,5vh,72px)] lg:self-start">
         {texte && <p className="lead mt-[34px] max-w-[46ch] text-[clamp(17px,1.25vw,20px)]">{texte}</p>}
         {bouton && (
           <div className="mt-10 flex flex-wrap gap-3.5">
@@ -119,52 +186,6 @@ export default function HeroSlides({ eyebrow, titre, texte, bouton, citation, li
           </div>
         )}
       </div>
-
-      {slides.length > 0 && (
-        <div className="flex flex-1 basis-[380px] items-center py-[clamp(20px,4vh,48px)]">
-          <figure className="relative mx-auto aspect-[4/5] w-full max-h-[min(70vh,680px)] overflow-hidden rounded-mk bg-sable">
-            {slides.map((s, i) =>
-              s.image ? (
-                <Image
-                  key={`${i}-${s.image}`}
-                  src={s.image}
-                  alt={s.alt ?? ''}
-                  fill
-                  sizes="(min-width: 768px) 50vw, 100vw"
-                  priority={i === 0}
-                  // Fondu de 1,4 s ; le zoom lent (7 s) court pendant toute la durée d'affichage
-                  className={`object-cover transition-[opacity,scale] duration-[1400ms,7000ms] ease-[cubic-bezier(.4,0,.2,1),linear] ${
-                    i === index ? 'scale-[1.06] opacity-100' : 'scale-100 opacity-0'
-                  }`}
-                />
-              ) : null
-            )}
-            <figcaption className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 bg-gradient-to-t from-encre/55 to-transparent px-[26px] py-[22px] text-creme">
-              <div>
-                <p className="text-xs uppercase tracking-[.2em] opacity-85">
-                  {String(index + 1).padStart(2, '0')} / {total}
-                  {active?.libelle ? ` · ${active.libelle}` : ''}
-                </p>
-                {active?.legende && <p className="mt-1.5 font-serif text-xl italic">{active.legende}</p>}
-              </div>
-              {slides.length > 1 && (
-                <div className="flex gap-2">
-                  {slides.map((s, i) => (
-                    <button
-                      key={`${i}-${s.ligne_titre}`}
-                      type="button"
-                      onClick={() => go(i)}
-                      aria-label={s.libelle || `Image ${i + 1}`}
-                      aria-current={i === index}
-                      className={`h-0.5 w-[34px] cursor-pointer transition-colors duration-500 ${i === index ? 'bg-creme' : 'bg-creme/35 hover:bg-creme/70'}`}
-                    />
-                  ))}
-                </div>
-              )}
-            </figcaption>
-          </figure>
-        </div>
-      )}
     </div>
   )
 }
