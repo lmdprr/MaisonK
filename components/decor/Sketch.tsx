@@ -22,11 +22,15 @@ const PLAY = 'var(--mk-play,paused)'
 /**
  * Déclaration `animation` proportionnelle à `--mk-dur`.
  *
+ * `--mk-offset` (0 par défaut) retarde tous les éléments d'un même croquis
+ * sans toucher aux délais de `sketch-data.ts` : le hero s'en sert pour laisser
+ * sa feuille de carton se poser avant le premier trait.
+ *
  * @param dur durée, en multiples de `--mk-dur`
  * @param delay délai avant le départ, en multiples de `--mk-dur`
  */
 export const anim = (name: string, dur: number, delay: number, ease = 'ease') =>
-  `${name} calc(var(--mk-dur,1s) * ${dur}) ${ease} calc(var(--mk-dur,1s) * ${delay}) forwards`
+  `${name} calc(var(--mk-dur,1s) * ${dur}) ${ease} calc(var(--mk-dur,1s) * ${delay} + var(--mk-offset,0s)) forwards`
 
 const vars = (style: Record<string, string | number>) => style as CSSProperties
 

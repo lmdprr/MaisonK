@@ -183,6 +183,7 @@ lib/
   imageLoader.ts               loader next/image → R2 + /cdn-cgi/image
   formToken.ts                 chiffrement de l'adresse destinataire
 scripts/sync-r2.mjs            synchronisation public/images → R2
+scripts/gen-papier.mjs         tuile « papier aquarelle » du hero, extraite d'une photo de papier
 keystatic.config.ts            schéma complet du CMS
 open-next.config.ts            adaptateur Cloudflare
 wrangler.jsonc                 configuration du Worker

@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react'
 import Image from '@/components/ui/Img'
 import type { HeroSlide } from '@/lib/types'
 import Eyebrow from '@/components/ui/Eyebrow'
@@ -28,6 +28,9 @@ interface Props {
 
 /** Délai entre deux slides en lecture automatique (ms). */
 const INTERVAL = 6000
+
+/** Variables CSS `--mk-*` passées en style inline. */
+const vars = (style: Record<string, string>) => style as CSSProperties
 
 /**
  * Diaporama du hero. La fin du titre (italique accent), le compteur, la
@@ -96,8 +99,18 @@ export default function HeroSlides({ eyebrow, titre, texte, bouton, citation, li
         )}
         {(citation || lien) && (
           <div data-sketch="hero" className="mt-[clamp(36px,5vh,56px)] flex flex-wrap items-end gap-[22px]">
-            <div className="w-[min(250px,58%)]">
-              <HeroSketch />
+            <div className="w-[min(272px,60%)]">
+              {/* Feuille de carton : entre en 0,6 × --mk-dur, puis le tracé démarre avec 0,5 de retard */}
+              <div
+                className="mk-papier rounded-mk p-3.5"
+                style={vars({
+                  '--mk-offset': 'calc(var(--mk-dur,1s) * .5)',
+                  animation: 'mk-paper calc(var(--mk-dur,1s) * .6) cubic-bezier(.2,.7,.2,1) forwards',
+                  animationPlayState: 'var(--mk-play,paused)',
+                })}
+              >
+                <HeroSketch />
+              </div>
             </div>
             <div className="mb-1.5 flex flex-col gap-3">
               {citation && <p className="max-w-[16ch] font-serif text-[17px] italic leading-[1.35] text-bordeaux">{citation}</p>}

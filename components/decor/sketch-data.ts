@@ -94,22 +94,36 @@ export const ROOMS: Record<TypePiece, SketchItem[]> = {
 }
 
 /**
- * Salon du hero, 260 × 150 : mur, canapé, plante. Lampe et cadre sont des
- * groupes séparés, déplacés par `MoveGroup` ; les rayons sont de simples
- * chemins animés dans `HeroSketch`.
+ * Salon du hero, 260 × 150, dans l'esprit du logo de Carole : un trait
+ * continu d'épaisseur constante (`w: 3`), bouts et angles arrondis, formes
+ * fermées, feuilles en amande. Structure en bordeaux, plante, tableau et
+ * lampe en terracotta.
+ *
+ * Sol, canapé et plante sont ici ; lampe et cadre sont des groupes séparés,
+ * déplacés par `MoveGroup` ; les rayons sont de simples chemins animés dans
+ * `HeroSketch`.
  */
 export const SALON_BASE: SketchItem[] = [
-  { rect: [14, 14, 232, 114], fill: '#C07454', tint: 0.09, crisp: true, delay: 1.9 },
-  { d: 'M8 128 Q130 125 252 129', w: 1.6 },
-  { d: 'M64 96 q0 -14 12 -14 h76 q12 0 12 14', delay: 0.2 },
-  { d: 'M54 96 h110 q4 0 4 4 v18 h-118 v-18 q0 -4 4 -4', delay: 0.35 },
-  { d: 'M108 82 v14 M60 118 v8 M158 118 v8', delay: 0.55, w: 1.3 },
-  { d: 'M40 124 h-16 l-2 -16 h20 z', delay: 0.5 },
-  { d: 'M31 108 q-14 -20 -4 -32 M31 108 q13 -22 5 -34 M31 108 q1 -20 -12 -26', c: 'T', delay: 0.7, w: 1.3 },
+  { d: 'M8 128 H244', w: 3 },
+  { d: 'M64 94 V82 a10 10 0 0 1 10 -10 h70 a10 10 0 0 1 10 10 V94', w: 3, delay: 0.2 },
+  { d: 'M109 72 V94', w: 3, delay: 0.4 },
+  { d: 'M52 122 V102 a8 8 0 0 1 8 -8 h98 a8 8 0 0 1 8 8 v20 H52 z', w: 3, delay: 0.45 },
+  { d: 'M62 122 v4.5 M156 122 v4.5', w: 3, delay: 0.65 },
+  { d: 'M14 110 h20 l-2 18 h-16 z', w: 3, delay: 0.55 },
+  { d: 'M24 110 C13 100 13 86 24 76 C35 86 35 100 24 110 Z', c: 'T', w: 3, delay: 0.7 },
+  { d: 'M24 108 C13 108 4 100 4 88 C15 88 23 96 24 108 Z', c: 'T', w: 3, delay: 0.85 },
+  { d: 'M24 108 C35 108 44 100 44 88 C33 88 25 96 24 108 Z', c: 'T', w: 3, delay: 0.95 },
 ]
-export const SALON_LAMP: SketchItem[] = [{ d: 'M204 124 v-50 M190 124 h28', delay: 0.6 }, { d: 'M186 74 l8 -22 h20 l8 22 z', c: 'T', delay: 0.8 }]
-export const SALON_FRAME: SketchItem[] = [{ d: 'M88 30 h48 v36 h-48 z', delay: 0.9 }, { d: 'M96 60 l12 -14 l10 10 l8 -8 l10 12', c: 'T', delay: 1.1, w: 1.3 }]
-export const SALON_RAYS = ['M190 46 l-5 -7', 'M204 42 v-9', 'M218 46 l5 -7']
+export const SALON_LAMP: SketchItem[] = [
+  { d: 'M204 126 V78 M190 128 h28', w: 3, delay: 0.6 },
+  { d: 'M185 78 l8 -24 a3 3 0 0 1 3 -2 h16 a3 3 0 0 1 3 2 l8 24 z', c: 'T', w: 3, delay: 0.8 },
+]
+export const SALON_FRAME: SketchItem[] = [
+  { d: 'M92 22 h40 a6 6 0 0 1 6 6 v24 a6 6 0 0 1 -6 6 h-40 a6 6 0 0 1 -6 -6 v-24 a6 6 0 0 1 6 -6 z', w: 3, delay: 0.9 },
+  { d: 'M97 52 l10 -12 l8 8 l7 -7 l9 11', c: 'T', w: 3, delay: 1.1 },
+  { d: 'M123 33 a2.6 2.6 0 1 0 0.01 0', c: 'T', w: 3, delay: 1.3 },
+]
+export const SALON_RAYS = ['M190 45 l-5 -7', 'M204 41 v-9', 'M218 45 l5 -7']
 
 /** Plan d'aménagement 220 × 150, qui bascule en perspective une fois tracé. */
 export const PLAN_FLAT: SketchItem[] = [

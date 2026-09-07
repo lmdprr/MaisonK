@@ -30,14 +30,18 @@ export function RoomSketch({ kind, className = '' }: { kind: TypePiece; classNam
 }
 
 /**
- * Salon du hero. Séquence : canapé et plante se dessinent, le cadre et la
- * lampe arrivent en glissant, le mur se teinte, puis trois rayons se dessinent
- * au-dessus de la lampe et rebondissent. Les délais sont calés à la main dans
- * `sketch-data.ts` et ici.
+ * Salon du hero, dessiné sur la feuille de papier posée par HeroSlides (traits
+ * en `multiply` pour paraître imprimés dans la fibre). Trait monoline dans
+ * l'esprit du logo, voir `SALON_*` dans sketch-data.
+ *
+ * Séquence : canapé et plante se dessinent, le cadre et la lampe arrivent en
+ * glissant, puis trois rayons se dessinent au-dessus de la lampe et
+ * rebondissent. Les délais sont calés à la main dans `sketch-data.ts`
+ * et ici.
  */
 export function HeroSketch() {
   return (
-    <Sketch viewBox="0 0 260 150" items={SALON_BASE}>
+    <Sketch viewBox="0 0 260 150" items={SALON_BASE} style={{ mixBlendMode: 'multiply' }}>
       <MoveGroup from="translate(-26px,-8px) rotate(-4deg)" delay={1.5}>
         <SketchItems items={SALON_FRAME} />
       </MoveGroup>
@@ -50,7 +54,7 @@ export function HeroSketch() {
             key={d}
             d={d}
             pathLength={1}
-            style={{ fill: 'none', stroke: '#C07454', strokeWidth: 1.5, strokeLinecap: 'round', strokeDasharray: 1, strokeDashoffset: 1, animation: anim('mk-draw', 0.3, 2.9 + k * 0.25, 'ease-out'), animationPlayState: PLAY }}
+            style={{ fill: 'none', stroke: '#C07454', strokeWidth: 3, strokeLinecap: 'round', strokeDasharray: 1, strokeDashoffset: 1, animation: anim('mk-draw', 0.3, 2.9 + k * 0.25, 'ease-out'), animationPlayState: PLAY }}
           />
         ))}
       </g>

@@ -22,6 +22,8 @@
   --color-sable: #d7d0b4;
   --color-sable-2: #e6e1d7;
   --color-sable-3: #e9e4da;
+  /* Blanc cassé de la feuille de papier du hero, sous la tuile de relief */
+  --color-papier: #f7f5f1;
   --color-sombre: #151515;
   --color-rose: #e6d9d3;
   --color-bordeaux: #551020;
@@ -410,7 +412,7 @@ input[type='color'].mk-color::-moz-color-swatch {
     opacity: 0;
   }
 }
-/* Aplat net qui balaie de gauche à droite (mur du hero) */
+/* Aplat net qui balaie de gauche à droite (`crisp` dans sketch-data) */
 @keyframes mk-sweep {
   to {
     transform: scaleX(1);
@@ -427,6 +429,30 @@ input[type='color'].mk-color::-moz-color-swatch {
   }
   70% {
     transform: translateY(1px);
+  }
+}
+/* Feuille de carton sous le croquis du hero : tuile de relief (gen-papier.mjs)
+ * en multiply sur la couleur unie. Un bitmap composité une fois, sans coût
+ * pendant le tracé ; `contain: paint` borne les invalidations aux bords de la
+ * feuille. */
+.mk-papier {
+  /* Tuile de 256 px affichée à 144 px : grain resserré, proche de la photo vue réduite ; net sur écran HiDPI */
+  background: var(--color-papier) url(/images/decor/papier.webp) 0 0 / 144px repeat;
+  background-blend-mode: multiply;
+  box-shadow:
+    0 1px 2px rgba(21, 21, 21, 0.08),
+    0 10px 22px -12px rgba(21, 21, 21, 0.35);
+  contain: paint;
+}
+/* La feuille se pose avant le premier trait (voir `--mk-offset`, Sketch.tsx) */
+@keyframes mk-paper {
+  from {
+    opacity: 0;
+    transform: translateY(10px) rotate(-4deg);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(-1.5deg);
   }
 }
 /* Quadrilobe qui éclot (papiers peints de Wall) */
