@@ -26,8 +26,9 @@ type Props = ModuleIntro & { level: 1 | 2; coordonnees: Coordonnees | null }
  * - sans `titre_accent`, le titre n'est plus plafonné en largeur ;
  * - visuel `image` / `portrait` : deux colonnes, l'image du côté choisi. Le
  *   portrait ajoute le fond bordeaux et le motif floral. Sur mobile, le texte
- *   passe devant l'image quand les cartes de contact sont affichées : les
- *   actions restent au premier écran.
+ *   passe devant l'image en tête de page (le titre ouvre la page) et quand
+ *   les cartes de contact sont affichées (les actions restent au premier
+ *   écran) ; en cours de page, l'image garde la main.
  *
  * Le premier module (h1) utilise le rythme « en-tête de page », les suivants
  * le rythme de section.
@@ -152,7 +153,7 @@ export default function Intro({
                 {afficher_contact && <ContactInfos coordonnees={coordonnees} />}
               </figure>
             </div>
-            <div data-reveal="" className={`${afficher_contact ? 'order-first ' : ''}${imageLeft ? 'md:order-2' : 'md:order-1'}`}>
+            <div data-reveal="" className={`${afficher_contact || level === 1 ? 'order-first ' : ''}${imageLeft ? 'md:order-2' : 'md:order-1'}`}>
               {texte}
             </div>
           </>
