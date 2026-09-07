@@ -48,6 +48,24 @@ export interface ProjetPayload {
 const MAX_PHOTO_BASE64 = 2_000_000
 
 /**
+ * Horodatage de la demande, en heure de La Réunion : le Worker tourne en UTC,
+ * Carole lit ses e-mails à l'heure de l'île. Sert à retrouver l'ordre des
+ * demandes quand plusieurs s'accumulent.
+ */
+function formatDateReunion(date: Date): string {
+  const fmt = new Intl.DateTimeFormat('fr-FR', {
+    timeZone: 'Indian/Reunion',
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+  return `${fmt.format(date)} (heure de La Réunion)`
+}
+
+/**
  * Envoie la demande de projet par e-mail.
  *
  * Les messages d'erreur retournés sont destinés à l'affichage : ils restent
@@ -97,7 +115,7 @@ export async function submitProjet(payload: ProjetPayload): Promise<{ success: b
       to: emailTo,
       replyTo: email,
       subject: `Nouveau projet — ${payload.piece || 'pièce à préciser'} (${nom})`,
-      text: `Nouvelle demande depuis /${payload.page_slug}\n\n${lignes.join('\n')}`,
+      text: `Nouvelle demande depuis /${payload.page_slug}\nReçue le ${formatDateReunion(new Date())}\n\n${lignes.join('\n')}`,
       attachments: payload.photo
         ? [{ filename: payload.photo.filename, content: payload.photo.base64, contentType: payload.photo.content_type }]
         : undefined,

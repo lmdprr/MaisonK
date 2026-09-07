@@ -176,6 +176,7 @@ content/
   prestations/*.yaml           collection Prestations
   global/{header,footer,coordonnees}.yaml  singletons
 docs/plan-modules-keystatic.md modèle de contenu (modules, collections, arguments)
+docs/suivi-leads-google-drive.md idée en attente : trace des leads dans un Google Sheet
 lib/
   keystatic.ts                 reader API (build uniquement)
   links.ts                     résolution des liens (`whatsapp` → wa.me depuis Coordonnées)
