@@ -12,7 +12,7 @@ modules:
       icone: fauteuil
       titre: Contactez-moi pour discuter de vos projets !
       lien:
-        label: Vous avez un projet précis ? Composez votre planche
+        label: Vous avez un projet précis ? Décrivez-moi votre pièce
         url: /votre-projet
       fond: creme
       visuel:

@@ -189,7 +189,7 @@ function ContactCards({ coordonnees }: { coordonnees: Coordonnees | null }) {
           >
             <span className="flex flex-col">
               <span className="text-xs uppercase tracking-[.2em] opacity-80">WhatsApp</span>
-              <span className="mt-1 font-serif text-2xl">Écrire à Carole</span>
+              <span className="mt-1 font-serif text-2xl">M’écrire sur WhatsApp</span>
             </span>
             <BulleWhatsApp />
           </a>

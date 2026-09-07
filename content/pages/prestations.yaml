@@ -66,6 +66,6 @@ modules:
       titre_accent: le potentiel de votre intérieur ?
       texte: Chaque projet est unique. Parlons du vôtre.
       cta:
-        label: Écrire sur WhatsApp
+        label: M'écrire sur WhatsApp
         url: whatsapp
       fond: rose

@@ -244,7 +244,7 @@ export default function PlancheTeintes({ formUrl = '/votre-projet' }: { formUrl?
             empty ? 'pointer-events-none opacity-45' : ''
           }`}
         >
-          <span>Continuer avec ma planche</span>
+          <span>Décrire ma pièce avec cette planche</span>
           <span aria-hidden="true" className="text-lg leading-none">→</span>
         </Link>
         <p className="text-[13px] leading-[1.45] text-(--fg-muted)">

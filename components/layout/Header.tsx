@@ -5,7 +5,7 @@ import Image from '@/components/ui/Img'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import type { Coordonnees, Header as HeaderData } from '@/lib/types'
-import { resolveLien } from '@/lib/links'
+import { resolveLien, whatsappUrl } from '@/lib/links'
 import Container from '@/components/ui/Container'
 import PaintButton from '@/components/ui/PaintButton'
 
@@ -16,11 +16,13 @@ interface Props {
 
 /**
  * En-tête collant : logo, navigation (soulignement animé sur la page active),
- * bouton CTA. Sous 1000 px, un bouton burger ouvre le menu.
+ * numéro WhatsApp, bouton CTA. Sous 1000 px, un bouton burger ouvre le menu
+ * et le numéro se replie en pictogramme, toujours visible à côté du burger.
  *
  * Composant client uniquement pour l'état du menu mobile et `usePathname`.
  * Le point de rupture est en `min-[1000px]` plutôt qu'un breakpoint Tailwind :
  * c'est la largeur à partir de laquelle cinq liens tiennent sur une ligne.
+ * Le numéro en clair demande 130 px de plus : sous 1150 px, seul le pictogramme reste.
  */
 export default function Header({ data, coordonnees }: Props) {
   const [open, setOpen] = useState(false)
@@ -38,6 +40,8 @@ export default function Header({ data, coordonnees }: Props) {
   }
 
   const cta = resolveLien(data.cta, coordonnees)
+  const wa = whatsappUrl(coordonnees)
+  const telephone = coordonnees?.telephone?.trim()
   const links = data.navigation_links ?? []
   // `/` redirige vers `/accueil` : les deux comptent comme la page d'accueil.
   const isActive = (url: string) => pathname === url || (url === '/accueil' && pathname === '/')
@@ -80,23 +84,38 @@ export default function Header({ data, coordonnees }: Props) {
             })}
           </ul>
 
-          {cta && (
-            <div className="hidden min-[1000px]:block">
-              <PaintButton {...cta} className="!px-[22px] !py-3" />
-            </div>
-          )}
+          <div className="flex items-center gap-4 min-[1000px]:gap-6">
+            {wa && (
+              <a
+                href={wa}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={telephone ? `WhatsApp, ${telephone}` : 'WhatsApp'}
+                className="flex items-center gap-2.5 whitespace-nowrap text-[15px] tracking-[.02em] transition-colors hover:text-bordeaux"
+              >
+                <BulleIcone />
+                {telephone && <span className="hidden min-[1150px]:inline">{telephone}</span>}
+              </a>
+            )}
 
-          {/* Burger : deux traits qui se croisent à l'ouverture */}
-          <button
-            type="button"
-            onClick={() => setOpen((v) => !v)}
-            aria-label="Menu"
-            aria-expanded={open}
-            className="flex size-11 flex-col justify-center gap-1.5 p-2 min-[1000px]:hidden"
-          >
-            <span className={`block h-[1.5px] bg-encre transition-transform duration-400 ${open ? 'translate-y-[3.75px] rotate-45' : ''}`} />
-            <span className={`block h-[1.5px] bg-encre transition-transform duration-400 ${open ? '-translate-y-[3.75px] -rotate-45' : ''}`} />
-          </button>
+            {cta && (
+              <div className="hidden min-[1000px]:block">
+                <PaintButton {...cta} className="!px-[22px] !py-3" />
+              </div>
+            )}
+
+            {/* Burger : deux traits qui se croisent à l'ouverture */}
+            <button
+              type="button"
+              onClick={() => setOpen((v) => !v)}
+              aria-label="Menu"
+              aria-expanded={open}
+              className="flex size-11 flex-col justify-center gap-1.5 p-2 min-[1000px]:hidden"
+            >
+              <span className={`block h-[1.5px] bg-encre transition-transform duration-400 ${open ? 'translate-y-[3.75px] rotate-45' : ''}`} />
+              <span className={`block h-[1.5px] bg-encre transition-transform duration-400 ${open ? '-translate-y-[3.75px] -rotate-45' : ''}`} />
+            </button>
+          </div>
         </nav>
       </Container>
 
@@ -119,10 +138,37 @@ export default function Header({ data, coordonnees }: Props) {
                   <PaintButton {...cta} />
                 </div>
               )}
+              {wa && telephone && (
+                <a href={wa} target="_blank" rel="noopener noreferrer" className="mt-4 flex items-center gap-2.5 text-[15px] tracking-[.02em]">
+                  <BulleIcone />
+                  WhatsApp · {telephone}
+                </a>
+              )}
             </div>
           </Container>
         </div>
       )}
     </header>
+  )
+}
+
+/**
+ * Bulle de message, version fixe de celle qui s'anime sur la carte WhatsApp
+ * de la page Contact. Tracée en `currentColor` pour suivre le survol du lien.
+ */
+function BulleIcone() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 44 36" className="h-[18px] w-[22px] shrink-0 overflow-visible">
+      <path
+        d="M6 5 q-3 0 -3 3 v14 q0 3 3 3 h6 l-2 7 l9 -7 h18 q3 0 3 -3 v-14 q0 -3 -3 -3 z"
+        className="fill-none stroke-current"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle cx="14" cy="15" r="2.2" className="fill-sauge" />
+      <circle cx="22" cy="15" r="2.2" className="fill-sauge" />
+      <circle cx="30" cy="15" r="2.2" className="fill-sauge" />
+    </svg>
   )
 }

@@ -403,7 +403,7 @@ const modules = fields.blocks(
           validation: { min: 1, max: 10 },
         }),
         photo_activee: fields.checkbox({ label: 'Étape 03 — proposer une photo', defaultValue: true }),
-        label_envoi: fields.text({ label: "Texte du bouton d'envoi", defaultValue: "Recevoir mon créneau d'échange" }),
+        label_envoi: fields.text({ label: "Texte du bouton d'envoi", defaultValue: 'Envoyer ma demande' }),
         note_envoi: fields.text({ label: 'Note sous le bouton', multiline: true }),
         confirmation: fields.object(
           {

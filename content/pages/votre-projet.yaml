@@ -30,7 +30,7 @@ modules:
         - Contemporaine
       max_ambiances: 3
       photo_activee: true
-      label_envoi: Recevoir mon créneau d'échange
+      label_envoi: Envoyer ma demande
       note_envoi: Je vous rappelle rapidement. Aucun engagement, aucune newsletter.
       confirmation:
         titre: Merci {prenom}, je prépare notre échange.

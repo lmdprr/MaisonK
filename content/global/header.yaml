@@ -8,8 +8,8 @@ navigation_links:
     url: /realisations
   - label: À propos
     url: /a-propos
-  - label: Votre projet
-    url: /votre-projet
+  - label: Contact
+    url: /contact
 cta:
-  label: Obtenir mon rendez-vous
-  url: /contact
+  label: Parlons de votre projet
+  url: /votre-projet
