@@ -17,7 +17,7 @@ modules:
       cta:
         label: Découvrir mes prestations
         url: /prestations
-      citation: 'Acheter moins, choisir juste : c''est là que tout se joue. citation'
+      citation: 'Acheter moins, choisir juste : c''est là que tout se joue.'
       lien:
         label: Voir mes réalisations
         url: /realisations
