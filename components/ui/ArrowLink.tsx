@@ -23,9 +23,13 @@ const VARIANTS: Record<NonNullable<Props['variant']>, string> = {
 /**
  * Lien fléché « Mon parcours → ». Au survol, l'écart s'ouvre et la flèche
  * s'étire (transform sur le glyphe, pas d'icône SVG).
+ *
+ * Largeur `fit-content` : le lien se replie sur son libellé mais accepte le
+ * retour à la ligne. En `max-content`, un libellé long élargirait la colonne
+ * de grille qui le contient au-delà de l'écran (page Contact sur mobile).
  */
 export default function ArrowLink({ label, url, external = false, variant = 'underline', className = '' }: Props) {
-  const classes = `group inline-flex w-max max-w-full items-center gap-2.5 transition-[gap,color] duration-300 hover:gap-3.5 hover:text-(--accent) ${VARIANTS[variant]} ${className}`.trim()
+  const classes = `group inline-flex w-fit max-w-full items-center gap-2.5 transition-[gap,color] duration-300 hover:gap-3.5 hover:text-(--accent) ${VARIANTS[variant]} ${className}`.trim()
   const arrow = (
     <span
       aria-hidden="true"

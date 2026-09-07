@@ -31,6 +31,10 @@ interface Props {
  * invisible couvre toute l'image, ce qui donne le glisser à la souris, au
  * tactile et au clavier sans gestionnaire d'événements maison. L'image
  * « avant » (projet 3D) est rognée par `clip-path` à la position du curseur.
+ *
+ * Le cadre est en 4/3 sur mobile et passe en 16/9 avec une hauteur minimale
+ * à partir de `md` : avec un ratio fixé, une hauteur minimale se transfère en
+ * largeur minimale, ce qui élargirait la page sous 768 px.
  */
 export default function AvantApres({ projets, aide }: Props) {
   const [index, setIndex] = useState(0)
@@ -75,7 +79,7 @@ export default function AvantApres({ projets, aide }: Props) {
       <div className="relative">
         {/* Cadre décalé derrière l'image, façon passe-partout */}
         <span aria-hidden="true" className="pointer-events-none absolute -bottom-3.5 -right-3.5 left-3.5 top-3.5 rounded-mk border border-terracotta opacity-55" />
-        <div className="relative aspect-video min-h-[320px] cursor-ew-resize select-none overflow-hidden rounded-mk bg-sable">
+        <div className="relative aspect-[4/3] cursor-ew-resize md:aspect-video md:min-h-[320px] select-none overflow-hidden rounded-mk bg-sable">
           {actif.image_apres && <Image src={actif.image_apres} alt="Après : réalisé" fill sizes="100vw" className="object-cover" priority />}
           {actif.image_avant && (
             <div className="absolute inset-0" style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }}>

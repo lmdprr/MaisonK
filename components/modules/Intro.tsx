@@ -106,7 +106,7 @@ export default function Intro({
       {decor}
       <div
         data-visuel={visuel.discriminant}
-        className={`grid gap-[clamp(40px,6vw,96px)] md:grid-cols-2 ${afficher_contact ? 'md:items-start' : image || isMotif ? 'md:items-center' : 'md:items-end'}`}
+        className={`grid gap-[clamp(40px,6vw,96px)] [&>*]:min-w-0 md:grid-cols-2 ${afficher_contact ? 'md:items-start' : image || isMotif ? 'md:items-center' : 'md:items-end'}`}
       >
         {isMotif ? (
           <>
