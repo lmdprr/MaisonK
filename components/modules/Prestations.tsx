@@ -19,7 +19,8 @@ type Props = ModulePrestations & { level: 1 | 2; coordonnees: Coordonnees | null
  *
  * En `detail`, l'encart d'une prestation peut remplacer l'image par la planche
  * de teintes (composant client, colonne texte rendue sticky) ou ajouter le
- * plan 3D animé sous le texte.
+ * plan 3D animé sous le texte. Sur mobile, le texte précède la planche : on
+ * lit à quoi sert l'outil avant de tomber dessus.
  */
 export default async function Prestations({ en_tete, affichage, prestations, fond, level, coordonnees }: Props) {
   const items = await getPrestations(prestations)
@@ -87,7 +88,7 @@ export default async function Prestations({ en_tete, affichage, prestations, fon
                 )}
               </div>
 
-              <div className={`${alt ? 'md:order-1' : ''} ${sticky ? 'md:sticky md:top-24' : ''}`}>
+              <div className={`${sticky ? 'order-first ' : ''}${alt ? 'md:order-1' : sticky ? 'md:order-none' : ''} ${sticky ? 'md:sticky md:top-24' : ''}`}>
                 <div className="flex items-center gap-4">
                   <SketchIcon name={p.icone} className="size-10" />
                   <span className="num">{String(index + 1).padStart(2, '0')}</span>

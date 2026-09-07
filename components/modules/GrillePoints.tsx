@@ -12,7 +12,10 @@ type Props = ModuleGrillePoints & { level: 1 | 2; coordonnees: Coordonnees | nul
  * Items numérotés ou illustrés. Deux styles :
  * - `cellules` : grille bordée (Pour qui). Chaque cellule porte un papier
  *   peint au trait (feuilles, arches, treillis) qui se dessine au survol, dans
- *   la couleur de son numéro ; motif et couleur sont assignés par index ;
+ *   la couleur de son numéro ; motif et couleur sont assignés par index. Les
+ *   filets sont portés par les cellules elles-mêmes : une rangée incomplète
+ *   ne laisse pas de case vide, et la hauteur minimale n'existe qu'à partir
+ *   de `md` pour ne pas creuser de vide sous le numéro sur mobile ;
  * - `liste` : bordure haute et grand numéro (Ma méthode, Ma démarche).
  *
  * Le numéro est calculé (01, 02...) ; une icône renseignée le remplace.
@@ -23,7 +26,7 @@ export default function GrillePoints({ en_tete, fond, style, items, note_finale,
       <SectionHead data={en_tete} level={level} coordonnees={coordonnees} />
 
       {style === 'cellules' ? (
-        <ol className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-[2px] border border-(--line) bg-(--line)">
+        <ol className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] border-t border-l border-(--line)">
           {items.map((item, index) => {
             const color = CELL_COLORS[index % CELL_COLORS.length]
             return (
@@ -33,7 +36,7 @@ export default function GrillePoints({ en_tete, fond, style, items, note_finale,
                 data-reveal-delay={`${index * 0.1}s`}
                 data-icone={item.icone}
                 data-wallpaper={CELL_WALLPAPERS[index % CELL_WALLPAPERS.length]}
-                className="relative flex min-h-[280px] flex-col gap-[18px] overflow-hidden bg-(--bg) p-[clamp(28px,3vw,44px)] transition-colors duration-500 hover:bg-(--hover-bg)"
+                className="relative flex flex-col gap-[18px] overflow-hidden border-b border-r border-(--line) bg-(--bg) p-[clamp(28px,3vw,44px)] transition-colors duration-500 hover:bg-(--hover-bg) md:min-h-[280px]"
               >
                 {/* Papier peint derrière le contenu ; le `relative` des enfants les fait passer devant */}
                 <span aria-hidden="true" className="pointer-events-none absolute inset-0">

@@ -218,9 +218,9 @@ export function PlancheComposer({ board, isFull, pin, remove, clear }: ComposerP
 }
 
 /**
- * Encart de la page Prestations : composeur + bouton « Continuer avec ma
- * planche » vers le formulaire, actif dès qu'une pièce est épinglée. Le
- * formulaire retrouve la planche via le localStorage.
+ * Encart de la page Prestations : composeur + bouton vers le formulaire,
+ * toujours actif. Planche vide, le libellé se contente de « Décrire ma pièce » ;
+ * sinon le formulaire retrouve la planche via le localStorage.
  */
 export default function PlancheTeintes({ formUrl = '/votre-projet' }: { formUrl?: string }) {
   const planche = usePlanche()
@@ -236,19 +236,16 @@ export default function PlancheTeintes({ formUrl = '/votre-projet' }: { formUrl?
       </div>
       <PlancheComposer {...planche} />
       <div className="flex flex-col gap-2.5">
+        {/* Le bouton reste actif planche vide : le formulaire n'exige pas de planche */}
         <Link
           href={formUrl}
-          aria-disabled={empty}
-          tabIndex={empty ? -1 : undefined}
-          className={`inline-flex items-center justify-between gap-4 rounded-mk bg-bordeaux px-[22px] py-4 text-xs uppercase tracking-[.14em] text-creme transition-[opacity,background-color,translate] duration-300 hover:-translate-y-0.5 hover:bg-bordeaux-2 ${
-            empty ? 'pointer-events-none opacity-45' : ''
-          }`}
+          className="inline-flex items-center justify-between gap-4 rounded-mk bg-bordeaux px-[22px] py-4 text-xs uppercase tracking-[.14em] text-creme transition-[background-color,translate] duration-300 hover:-translate-y-0.5 hover:bg-bordeaux-2"
         >
-          <span>Décrire ma pièce avec cette planche</span>
+          <span>{empty ? 'Décrire ma pièce' : 'Décrire ma pièce avec cette planche'}</span>
           <span aria-hidden="true" className="text-lg leading-none">→</span>
         </Link>
         <p className="text-[13px] leading-[1.45] text-(--fg-muted)">
-          {empty ? 'Épinglez au moins une teinte ou matière pour continuer.' : `Votre planche : ${planche.board.map((x) => x.name).join(', ')}.`}
+          {empty ? 'Facultatif : les teintes épinglées seront jointes à votre demande.' : `Votre planche : ${planche.board.map((x) => x.name).join(', ')}.`}
         </p>
       </div>
     </div>
