@@ -75,16 +75,22 @@ côté Keystatic. R2 sert donc d'**origine de diffusion**, alimentée après cha
 Les chemins stockés en YAML restent relatifs (`/images/hero/salon.jpg`) : le
 contenu ne dépend pas de l'hébergeur, seul le loader décide de l'origine.
 
-### Trois modes, pilotés par l'environnement
+### Deux réglages indépendants, pilotés par l'environnement
 
-| Variables | Résultat |
+| Variable | Effet |
 |---|---|
-| aucune | images servies depuis `/public` — fonctionne, sans redimensionnement |
-| `NEXT_PUBLIC_IMAGE_CDN_URL` | images servies depuis le bucket R2 |
-| + `NEXT_PUBLIC_IMAGE_TRANSFORMS=true` | passage par `/cdn-cgi/image` : redimensionnement + `format=auto` |
+| aucune | images servies depuis `/public` (Workers Static Assets) — fonctionne, sans redimensionnement |
+| `NEXT_PUBLIC_IMAGE_CDN_URL` | origine des fichiers : le bucket R2 au lieu du site |
+| `NEXT_PUBLIC_IMAGE_TRANSFORMS=true` | passage par `/cdn-cgi/image` : redimensionnement + `format=auto`, avec ou sans R2 |
 
-Le troisième mode exige que **Transformations** soit activé sur la zone Cloudflare,
-donc un domaine custom (`maisonk.fr`) — cela ne fonctionne pas sur `*.workers.dev`.
+Les transformations exigent que **Transformations** soit activé sur la zone Cloudflare,
+donc un domaine custom — cela ne fonctionne pas sur `*.workers.dev`. Si l'origine
+est un autre domaine que le site (bucket R2 sur `cdn.…`), activer aussi
+« Resize images from any origin » sur la zone.
+
+Les largeurs candidates du `srcset` sont plafonnées dans `next.config.ts`
+(`deviceSizes`, `imageSizes`) : 7 largeurs au lieu des 16 par défaut de Next,
+car chaque largeur réellement demandée consomme une transformation unique.
 
 ### Synchroniser vers R2
 
@@ -163,8 +169,10 @@ app/
   (site)/page.tsx              redirection vers /accueil
   actions/submitProjet.ts      server action Resend (formulaire « Votre projet »)
   api/keystatic/[...params]/   route handler Keystatic
+  api/publier/                 mise en ligne (avance `production` sur `main`)
   keystatic/[[...params]]/     UI d'administration
 components/
+  admin/                       bouton « Mettre en ligne » injecté dans Keystatic
   layout/                      Header, Footer
   modules/                     ModuleRenderer + 9 modules de page
   interactive/                 composants clients : HeroSlides, AvantApres, PlancheTeintes, ProjetForm
@@ -179,6 +187,7 @@ docs/plan-modules-keystatic.md modèle de contenu (modules, collections, argumen
 docs/suivi-leads-google-drive.md idée en attente : trace des leads dans un Google Sheet
 lib/
   keystatic.ts                 reader API (build uniquement)
+  publish.ts                   branches source/cible et contrat de /api/publier
   links.ts                     résolution des liens (`whatsapp` → wa.me depuis Coordonnées)
   types.ts                     types TypeScript des modules
   imageLoader.ts               loader next/image → R2 + /cdn-cgi/image
@@ -254,6 +263,34 @@ Règles communes :
    lus par le route handler ;
    tant qu'elles sont absentes, la config retombe sur le stockage local et le
    build reste vert.
+
+## Mise en ligne
+
+Keystatic commite sur `main` à chaque sauvegarde. Si Cloudflare construisait
+`main`, dix sauvegardes déclencheraient dix builds. Le Worker suit donc la
+branche `production`, et l'admin propose un bouton **Mettre en ligne** (en bas
+à droite de `/keystatic`) qui avance `production` sur `main` en fast-forward :
+un seul build par session d'édition, au moment choisi par l'éditeur.
+
+Le bouton affiche le nombre de modifications en attente et publie avec le
+token GitHub de la session Keystatic : aucun secret supplémentaire, et seuls
+les comptes ayant le droit d'écrire sur le dépôt peuvent publier. La branche
+`production` est créée à la première mise en ligne si elle n'existe pas.
+
+Réglages Workers Builds correspondants (**Settings → Builds → Branch control**) :
+
+- **Production branch** : `production`
+- **Non-production branch builds** : désactivés, sinon chaque commit sur `main`
+  déclencherait un build de preview et on retomberait sur le problème initial.
+
+`main` reste la branche de développement : les commits de code y passent aussi
+et partent en ligne à la prochaine mise en ligne. Personne ne doit commiter
+directement sur `production` ; si elle diverge, le bouton refuse de publier
+(`conflict`) et il faut la réaligner à la main :
+
+```bash
+git push origin main:production --force-with-lease
+```
 
 Déploiement manuel : `npm run deploy`.
 

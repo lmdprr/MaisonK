@@ -26,6 +26,8 @@ export type DocumentContent = unknown[]
 export type Fond = 'creme' | 'sable' | 'sombre' | 'rose'
 export type Icone = 'aucune' | 'fauteuil' | 'cadre' | 'plan' | 'plante'
 export type PositionImage = 'gauche' | 'droite'
+/** Couleur de la partie italique d'un titre de section. `auto` suit l'accent du fond. */
+export type CouleurAccent = 'auto' | 'bordeaux' | 'terracotta' | 'fleur'
 
 /**
  * Lien fléché ou bouton rouleau. `url` peut valoir `whatsapp`, résolu depuis
@@ -36,11 +38,14 @@ export interface Lien {
   url?: string | null
 }
 
-/** Tête de section partagée : eyebrow, icône, titre, intro, lien. */
+/** Tête de section partagée : eyebrow, icône, titre (+ suite en italique), intro, lien. */
 export interface EnTeteSection {
   eyebrow?: string | null
   icone: Icone
   titre?: string | null
+  /** Suite du titre en italique, rendue après un espace. */
+  titre_accent?: string | null
+  couleur_accent?: CouleurAccent
   intro?: string | null
   lien: Lien
 }
@@ -135,6 +140,8 @@ export type GalerieSource =
 export interface ModuleGalerie {
   en_tete: EnTeteSection
   fond: Fond
+  /** Quadrilobe qui éclot dans le coin haut droit de la section. */
+  fleur?: boolean
   source: GalerieSource
   affichage: 'cartes' | 'fiches' | 'comparateur' | 'mosaique'
   /** Texte d'aide du comparateur (« glissez »). */

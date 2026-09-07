@@ -137,7 +137,7 @@ export function PlancheComposer({ board, isFull, pin, remove, clear }: ComposerP
                     aria-label={t.name}
                     aria-pressed={on}
                     title={t.name}
-                    className="size-10 cursor-pointer rounded-full transition-[box-shadow,transform] duration-300 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
+                    className="size-10 cursor-pointer rounded-full transition-[box-shadow,translate] duration-300 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
                     style={{
                       background: t.bg,
                       boxShadow: on ? '0 0 0 2px var(--color-creme), 0 0 0 3.5px var(--color-bordeaux)' : '0 0 0 1px rgb(21 21 21 / .15)',
@@ -240,7 +240,7 @@ export default function PlancheTeintes({ formUrl = '/votre-projet' }: { formUrl?
           href={formUrl}
           aria-disabled={empty}
           tabIndex={empty ? -1 : undefined}
-          className={`inline-flex items-center justify-between gap-4 rounded-mk bg-bordeaux px-[22px] py-4 text-xs uppercase tracking-[.14em] text-creme transition-[opacity,background-color,transform] duration-300 hover:-translate-y-0.5 hover:bg-bordeaux-2 ${
+          className={`inline-flex items-center justify-between gap-4 rounded-mk bg-bordeaux px-[22px] py-4 text-xs uppercase tracking-[.14em] text-creme transition-[opacity,background-color,translate] duration-300 hover:-translate-y-0.5 hover:bg-bordeaux-2 ${
             empty ? 'pointer-events-none opacity-45' : ''
           }`}
         >

@@ -313,7 +313,7 @@ export default function ProjetForm(props: ProjetFormProps) {
             <button
               type="submit"
               disabled={sending}
-              className="inline-flex cursor-pointer items-center justify-between gap-4 rounded-mk bg-bordeaux px-6 py-[18px] text-xs uppercase tracking-[.14em] text-creme transition-[background-color,transform] duration-300 hover:-translate-y-0.5 hover:bg-bordeaux-2 disabled:cursor-wait disabled:opacity-60"
+              className="inline-flex cursor-pointer items-center justify-between gap-4 rounded-mk bg-bordeaux px-6 py-[18px] text-xs uppercase tracking-[.14em] text-creme transition-[background-color,translate] duration-300 hover:-translate-y-0.5 hover:bg-bordeaux-2 disabled:cursor-wait disabled:opacity-60"
             >
               <span>{sending ? 'Envoi…' : label_envoi || 'Envoyer'}</span>
               <span aria-hidden="true" className="text-lg leading-none">→</span>

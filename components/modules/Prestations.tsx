@@ -6,7 +6,7 @@ import Section from '@/components/ui/Section'
 import SectionHead from '@/components/ui/SectionHead'
 import PlancheTeintes from '@/components/interactive/PlancheTeintes'
 import { PlanSketch, SketchIcon } from '@/components/decor/Sketches'
-import { BloomFlower, Flower } from '@/components/decor/Wall'
+import { CornerBloom, Flower } from '@/components/decor/Wall'
 
 type Props = ModulePrestations & { level: 1 | 2; coordonnees: Coordonnees | null }
 
@@ -26,8 +26,8 @@ export default async function Prestations({ en_tete, affichage, prestations, fon
 
   if (affichage === 'apercu') {
     return (
-      <Section module="prestations" fond={fond} className="overflow-hidden">
-        <BloomFlower className="pointer-events-none absolute -right-[clamp(30px,6vw,70px)] -top-[clamp(30px,6vw,70px)] size-[clamp(180px,22vw,320px)] opacity-[.32]" />
+      <Section module="prestations" fond={fond} className="isolate overflow-hidden">
+        <CornerBloom />
         <SectionHead data={en_tete} level={level} coordonnees={coordonnees} />
         <ol className="flex flex-col">
           {items.map((p, index) => (

@@ -6,7 +6,7 @@ import Section from '@/components/ui/Section'
 import SectionHead from '@/components/ui/SectionHead'
 import AvantApres from '@/components/interactive/AvantApres'
 import { RoomSketch } from '@/components/decor/Sketches'
-import Wall from '@/components/decor/Wall'
+import Wall, { CornerBloom } from '@/components/decor/Wall'
 
 type Props = ModuleGalerie & { level: 1 | 2; coordonnees: Coordonnees | null }
 
@@ -37,14 +37,20 @@ const ZOOM = 'object-cover transition-transform duration-[1.2s] ease-[cubic-bezi
  * Composant serveur asynchrone : la sélection des projets est faite ici, le
  * comparateur ne reçoit que les champs dont il a besoin et uniquement les
  * projets qui ont une vraie image « avant ».
+ *
+ * `fleur` ajoute le quadrilobe d'angle commun à l'aperçu Prestations ; la
+ * section passe alors en `isolate overflow-hidden` (voir `CornerBloom`).
  */
-export default async function Galerie({ en_tete, fond, source, affichage, texte_aide, level, coordonnees }: Props) {
+export default async function Galerie({ en_tete, fond, fleur, source, affichage, texte_aide, level, coordonnees }: Props) {
   const projets = source.discriminant === 'projets' ? await selectProjets(source.value, affichage) : []
+  const decor = fleur ? <CornerBloom /> : null
+  const decorClass = fleur ? 'isolate overflow-hidden' : ''
 
   if (affichage === 'comparateur') {
     return (
-      <Section module="galerie" fond={fond} size="grid" padding="none" className="isolate pt-[clamp(40px,5vw,64px)]">
+      <Section module="galerie" fond={fond} size="grid" padding="none" className={`isolate pt-[clamp(40px,5vw,64px)] ${decorClass}`.trim()}>
         {marges}
+        {decor}
         <SectionHead data={en_tete} level={level} coordonnees={coordonnees} />
         <AvantApres
           aide={texte_aide}
@@ -64,7 +70,8 @@ export default async function Galerie({ en_tete, fond, source, affichage, texte_
 
   if (affichage === 'fiches') {
     return (
-      <Section module="galerie" fond={fond}>
+      <Section module="galerie" fond={fond} className={decorClass}>
+        {decor}
         <SectionHead data={en_tete} level={level} coordonnees={coordonnees} />
         {/* Auto-fit plafonné à trois colonnes : la largeur minimale d'une colonne ne descend jamais sous un tiers du conteneur. */}
         <ul className="grid [--gap:clamp(20px,3vw,48px)] grid-cols-[repeat(auto-fit,minmax(max(280px,calc((100%-2*var(--gap))/3)),1fr))] gap-(--gap)">
@@ -93,7 +100,8 @@ export default async function Galerie({ en_tete, fond, source, affichage, texte_
     // La mosaïque accepte les deux sources : images libres, ou image « après » des projets.
     const images = source.discriminant === 'images' ? source.value.images : projets.map((p) => ({ image: p.image_apres, alt: p.titre, url: null }))
     return (
-      <Section module="galerie" fond={fond} padding="none" className="py-[clamp(64px,8vw,110px)]">
+      <Section module="galerie" fond={fond} padding="none" className={`py-[clamp(64px,8vw,110px)] ${decorClass}`.trim()}>
+        {decor}
         <SectionHead data={en_tete} level={level} coordonnees={coordonnees} className="!mb-7 md:items-baseline" />
         <ul data-reveal="" className="grid grid-cols-[repeat(auto-fit,minmax(140px,1fr))] gap-2.5">
           {images.map((img, index) => {
@@ -105,7 +113,7 @@ export default async function Galerie({ en_tete, fond, source, affichage, texte_
                   alt={img.alt ?? ''}
                   fill
                   sizes="(min-width: 768px) 17vw, 33vw"
-                  className="object-cover saturate-90 transition-[filter,transform] duration-1000 group-hover:scale-[1.04] group-hover:saturate-110"
+                  className="object-cover saturate-90 transition-[filter,scale] duration-1000 ease-[cubic-bezier(.2,.7,.2,1)] group-hover:scale-[1.04] group-hover:saturate-110"
                 />
               </span>
             )
@@ -128,7 +136,8 @@ export default async function Galerie({ en_tete, fond, source, affichage, texte_
 
   // Par défaut : cartes. Le lien pointe vers l'ancre du projet sur la page Réalisations.
   return (
-    <Section module="galerie" fond={fond}>
+    <Section module="galerie" fond={fond} className={decorClass}>
+      {decor}
       <SectionHead data={en_tete} level={level} coordonnees={coordonnees} />
       <ul className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-[clamp(16px,2.5vw,36px)]">
         {projets.map((p, index) => (

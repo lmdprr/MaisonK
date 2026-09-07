@@ -11,6 +11,7 @@
  */
 
 import { config, collection, singleton, fields } from '@keystatic/core'
+import PublishMark from './components/admin/PublishButton'
 
 /** Slug de la page servie sur `/`. */
 export const HOME_SLUG = 'accueil'
@@ -88,13 +89,30 @@ const cta = (label = 'Bouton') =>
     { label }
   )
 
-/** Tête de section : eyebrow + icône + titre + intro + lien. Rendue par `ui/SectionHead`. */
+/**
+ * Tête de section : eyebrow + icône + titre (+ suite en italique) + intro + lien.
+ * Rendue par `ui/SectionHead`.
+ *
+ * La couleur de l'italique est un choix éditorial limité à la palette : par
+ * défaut elle suit l'accent du fond (bordeaux, rose clair sur fond sombre).
+ */
 const enTeteSection = () =>
   fields.object(
     {
       eyebrow: fields.text({ label: 'Eyebrow (petit texte au-dessus du titre)' }),
       icone: icone(),
       titre: fields.text({ label: 'Titre' }),
+      titre_accent: fields.text({ label: 'Suite du titre en italique (optionnel)' }),
+      couleur_accent: fields.select({
+        label: "Couleur de l'italique",
+        options: [
+          { label: 'Selon le fond (bordeaux, rose clair sur sombre)', value: 'auto' },
+          { label: 'Bordeaux', value: 'bordeaux' },
+          { label: 'Terracotta', value: 'terracotta' },
+          { label: 'Vieux rose (fleur)', value: 'fleur' },
+        ],
+        defaultValue: 'auto',
+      }),
       intro: fields.text({ label: "Texte d'introduction", multiline: true }),
       lien: lien(),
     },
@@ -305,6 +323,7 @@ const modules = fields.blocks(
       schema: fields.object({
         en_tete: enTeteSection(),
         fond: fond(),
+        fleur: fields.checkbox({ label: 'Fleur qui éclot en haut à droite', defaultValue: false }),
         source: fields.conditional(
           fields.select({
             label: 'Source',
@@ -472,7 +491,9 @@ export default config({
     : { kind: 'local' },
 
   ui: {
-    brand: { name: 'MaisonK' },
+    // Le « logo » porte aussi le bouton « Mettre en ligne » : c'est le seul
+    // composant React que Keystatic laisse injecter dans son interface.
+    brand: { name: 'MaisonK', mark: PublishMark },
     navigation: {
       Contenu: ['pages', 'projets', 'prestations'],
       Site: ['header', 'footer', 'coordonnees'],

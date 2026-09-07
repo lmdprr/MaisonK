@@ -133,7 +133,7 @@ export default function HeroSlides({ eyebrow, titre, texte, bouton, citation, li
                   sizes="(min-width: 768px) 50vw, 100vw"
                   priority={i === 0}
                   // Fondu de 1,4 s ; le zoom lent (7 s) court pendant toute la durée d'affichage
-                  className={`object-cover transition-[opacity,transform] duration-[1400ms,7000ms] ease-[cubic-bezier(.4,0,.2,1),linear] ${
+                  className={`object-cover transition-[opacity,scale] duration-[1400ms,7000ms] ease-[cubic-bezier(.4,0,.2,1),linear] ${
                     i === index ? 'scale-[1.06] opacity-100' : 'scale-100 opacity-0'
                   }`}
                 />

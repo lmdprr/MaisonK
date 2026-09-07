@@ -38,6 +38,20 @@ export function BloomFlower({ className = '' }: { className?: string }) {
   )
 }
 
+/**
+ * Fleur d'angle des sections (aperçu Prestations, galerie) : déborde du coin
+ * haut droit, derrière le contenu. La section appelante doit être `isolate`
+ * et `overflow-hidden` pour que le `-z-10` reste dans la section et que le
+ * débordement soit rogné.
+ */
+export function CornerBloom({ className = '' }: { className?: string }) {
+  return (
+    <BloomFlower
+      className={`pointer-events-none absolute -right-[clamp(30px,6vw,70px)] -top-[clamp(30px,6vw,70px)] -z-10 size-[clamp(180px,22vw,320px)] opacity-[.32] ${className}`.trim()}
+    />
+  )
+}
+
 type Variant = 'full' | 'edge' | 'seed' | 'corner' | 'band' | 'marge'
 
 /**

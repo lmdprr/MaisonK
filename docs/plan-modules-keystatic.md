@@ -45,10 +45,13 @@ module reste identique quel que soit le fond.
 
 ### 2.2 Un sous-schéma `en_tete` partagé
 
-Sept sections commencent par : eyebrow (avec icône croquis optionnelle) · titre ·
-texte d'intro ou lien fléché. Il est déclaré une fois (`enTeteSection()` dans
-`keystatic.config.ts`) et rendu par un seul composant (`ui/SectionHead`), qui
-choisit sa disposition selon les champs remplis. Même chose pour `lien` (label +
+Sept sections commencent par : eyebrow (avec icône croquis optionnelle) · titre
+(avec, en option, une suite en italique `titre_accent` dont la couleur
+`couleur_accent` est choisie dans la palette : accent du fond par défaut,
+bordeaux, terracotta ou vieux rose) · texte d'intro ou lien fléché. Il est
+déclaré une fois (`enTeteSection()` dans `keystatic.config.ts`) et rendu par un
+seul composant (`ui/SectionHead`), qui choisit sa disposition selon les champs
+remplis. Même chose pour `lien` (label +
 url) et `cta` (label + url, rendu bouton rouleau).
 
 ### 2.3 Des collections pour ce qui apparaît plusieurs fois
@@ -156,6 +159,7 @@ comparateur avant / après · mosaïque Instagram.
 |---|---|
 | `en_tete` | partagé (Instagram : titre « Suivez les coulisses » + lien « @maisonk.re ↗ ») |
 | `fond` | select partagé |
+| `fleur` | checkbox : quadrilobe qui éclot dans le coin haut droit (même décor que l'aperçu Prestations) |
 | `source` | conditionnel : `projets` → `{ projets[] (relationship, vide = tous), limite }` · `images` → `{ images[] { image, alt, url? } }` |
 | `affichage` | select : `cartes` (image 4/5, titre, lieu) · `fiches` (image 4/3, croquis, titre, lieu, type, texte) · `comparateur` (onglets + curseur + note) · `mosaique` (carrés, sans texte) |
 | `texte_aide` | text, « glissez » sur le comparateur |

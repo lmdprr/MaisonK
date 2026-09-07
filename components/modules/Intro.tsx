@@ -174,7 +174,7 @@ function ContactCards({ coordonnees }: { coordonnees: Coordonnees | null }) {
   if (!coordonnees) return null
   const wa = whatsappUrl(coordonnees)
   const tel = coordonnees.telephone?.replace(/\s/g, '')
-  const card = 'flex items-center justify-between gap-4 rounded-mk px-[26px] py-[22px] transition-[background-color,border-color,transform] duration-300'
+  const card = 'flex items-center justify-between gap-4 rounded-mk px-[26px] py-[22px] transition-[background-color,border-color,translate] duration-300'
   const outline = `${card} border border-(--line-strong) hover:border-encre hover:bg-sable-2`
 
   return (

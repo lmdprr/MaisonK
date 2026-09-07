@@ -1,4 +1,4 @@
-import type { Coordonnees, EnTeteSection } from '@/lib/types'
+import type { Coordonnees, CouleurAccent, EnTeteSection } from '@/lib/types'
 import { resolveLien } from '@/lib/links'
 import Heading from './Heading'
 import Eyebrow from './Eyebrow'
@@ -14,7 +14,19 @@ interface Props {
 }
 
 /**
- * Tête de section partagée : eyebrow (+ icône croquis), titre, intro, lien fléché.
+ * Classe de couleur de l'italique du titre. Vide pour `auto` : `h1 em, h2 em`
+ * de globals.css prend alors l'accent du fond.
+ */
+const ACCENT: Record<CouleurAccent, string> = {
+  auto: '',
+  bordeaux: 'text-bordeaux',
+  terracotta: 'text-terracotta',
+  fleur: 'text-fleur',
+}
+
+/**
+ * Tête de section partagée : eyebrow (+ icône croquis), titre (+ suite en
+ * italique, colorée au choix), intro, lien fléché.
  *
  * Trois dispositions, choisies par le contenu et non par un champ :
  * - intro présente : deux colonnes alignées en bas, l'intro à droite ;
@@ -26,13 +38,24 @@ interface Props {
  */
 export default function SectionHead({ data, level, coordonnees, spaced = true, className = '' }: Props) {
   const lien = resolveLien(data.lien, coordonnees)
-  if (!data.eyebrow && !data.titre && !data.intro && !lien) return null
+  if (!data.eyebrow && !data.titre && !data.titre_accent && !data.intro && !lien) return null
 
   const margin = spaced ? 'mb-head' : ''
+  const accent = ACCENT[data.couleur_accent ?? 'auto'] || undefined
   const titre = (
     <div className="flex flex-col gap-[18px]">
       {data.eyebrow && <Eyebrow icone={data.icone}>{data.eyebrow}</Eyebrow>}
-      {data.titre && <Heading level={level}>{data.titre}</Heading>}
+      {(data.titre || data.titre_accent) && (
+        <Heading level={level}>
+          {data.titre}
+          {data.titre_accent && (
+            <>
+              {data.titre && ' '}
+              <em className={accent}>{data.titre_accent}</em>
+            </>
+          )}
+        </Heading>
+      )}
     </div>
   )
 
