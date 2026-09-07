@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useId, useRef, useState } from 'react'
-import type { FormEvent } from 'react'
+import type { FormEvent, InputHTMLAttributes } from 'react'
 import ArrowLink from '@/components/ui/ArrowLink'
 import Eyebrow from '@/components/ui/Eyebrow'
 import Heading from '@/components/ui/Heading'
@@ -36,6 +36,10 @@ const AUTRE = 'Autre…'
 /** Côté max de la photo après redimensionnement. Suffit pour juger une pièce. */
 const PHOTO_MAX_PX = 1600
 const PHOTO_QUALITY = 0.82
+/** Les trois champs de coordonnées ; la clé sert d'identifiant et de clé d'erreur. */
+type ChampKey = 'nom' | 'tel' | 'email'
+/** Vérification volontairement large : un @ et un point dans le domaine. */
+const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 /**
  * Formulaire « Votre projet », en quatre étapes sur une seule vue :
@@ -47,8 +51,10 @@ const PHOTO_QUALITY = 0.82
  * jointe). La confirmation remplace le formulaire sans changer de page, pour
  * garder le contexte de la colonne gauche.
  *
- * Pas de bibliothèque de formulaire : quatre champs libres et des chips, la
- * validation native (`required`, `type=email`) suffit.
+ * Pas de bibliothèque de formulaire : quatre champs libres et des chips. Les
+ * coordonnées sont vérifiées à l'envoi et l'erreur s'affiche sous le champ
+ * concerné : les bulles natives disparaissent au premier toucher sur mobile.
+ * `required` et `type=email` restent pour la sémantique.
  */
 export default function ProjetForm(props: ProjetFormProps) {
   const { eyebrow, icone, titre, intro, level, pieces, ambiances, max_ambiances, photo_activee, label_envoi, note_envoi, confirmation, confirmationLien, pageSlug, recipientToken } = props
@@ -69,6 +75,7 @@ export default function ProjetForm(props: ProjetFormProps) {
   const asideRef = useRef<HTMLDivElement>(null)
   const [sending, setSending] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [fieldErrors, setFieldErrors] = useState<Partial<Record<ChampKey, string>>>({})
   const [sent, setSent] = useState(false)
 
   // L'aperçu est une URL blob : à libérer quand la photo change ou au démontage.
@@ -112,9 +119,22 @@ export default function ProjetForm(props: ProjetFormProps) {
   const moodsFinal = moods.map((m) => (m === AUTRE ? moodOther.trim() : m)).filter(Boolean)
   const firstName = name.trim().split(/\s+/)[0] || ''
 
+  const clearError = (key: ChampKey) => setFieldErrors((cur) => (cur[key] ? { ...cur, [key]: undefined } : cur))
+
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setError(null)
+    const errs: Partial<Record<ChampKey, string>> = {}
+    if (!name.trim()) errs.nom = 'Indiquez votre prénom et votre nom.'
+    if (!phone.trim()) errs.tel = 'Indiquez un numéro où vous joindre.'
+    if (!email.trim()) errs.email = 'Indiquez votre e-mail.'
+    else if (!EMAIL.test(email.trim())) errs.email = 'Vérifiez l’adresse e-mail.'
+    setFieldErrors(errs)
+    const premier = (Object.keys(errs) as ChampKey[])[0]
+    if (premier) {
+      document.getElementById(`${formId}-${premier}`)?.focus()
+      return
+    }
     // Pas de jeton = FORM_TOKEN_SECRET absente au build. On ne tente pas
     // l'envoi, l'action échouerait de toute façon.
     if (!recipientToken) {
@@ -166,6 +186,24 @@ export default function ProjetForm(props: ProjetFormProps) {
       {label}
     </button>
   )
+
+  const champ = (key: ChampKey, label: string, input: InputHTMLAttributes<HTMLInputElement>) => {
+    const id = `${formId}-${key}`
+    const err = fieldErrors[key]
+    return (
+      <div className="flex flex-col gap-1">
+        <label htmlFor={id} className="text-[13px] uppercase tracking-[.14em] text-(--fg-muted)">
+          {label}
+        </label>
+        <input id={id} className={`field ${err ? 'border-bordeaux' : ''}`} aria-invalid={err ? true : undefined} aria-describedby={err ? `${id}-err` : undefined} {...input} />
+        {err && (
+          <p id={`${id}-err`} className="text-[13px] text-bordeaux">
+            {err}
+          </p>
+        )}
+      </div>
+    )
+  }
 
   const card = 'flex flex-col rounded-mk bg-creme p-[clamp(24px,3.5vw,44px)] shadow-[0_24px_50px_-30px_rgb(21_21_21/.35)]'
 
@@ -245,14 +283,14 @@ export default function ProjetForm(props: ProjetFormProps) {
           {confirmationLien && <ArrowLink {...confirmationLien} variant="italic" />}
         </div>
       ) : (
-        <form onSubmit={onSubmit} data-component="ProjetForm" className={`${card} gap-11`}>
+        <form onSubmit={onSubmit} noValidate data-component="ProjetForm" className={`${card} gap-11`}>
           <fieldset className="flex flex-col gap-4">
             <legend className="contents">{etape('01', 'Quelle pièce ?')}</legend>
             <div className="flex flex-wrap gap-2">
               {[...pieces, AUTRE].map((p) => chip(p, room === p, () => setRoom((cur) => (cur === p ? '' : p))))}
             </div>
             {room === AUTRE && (
-              <input className="field max-w-[360px] py-2.5 text-[15px]" type="text" placeholder="Précisez la pièce" value={roomOther} onChange={(e) => setRoomOther(e.target.value)} />
+              <input className="field max-w-[360px] py-2.5 text-[15px]" type="text" placeholder="Précisez la pièce" aria-label="Précisez la pièce" value={roomOther} onChange={(e) => setRoomOther(e.target.value)} />
             )}
           </fieldset>
 
@@ -262,7 +300,7 @@ export default function ProjetForm(props: ProjetFormProps) {
               {[...ambiances, AUTRE].map((m) => chip(m, moods.includes(m), () => toggleMood(m), !moods.includes(m) && moods.length >= max_ambiances))}
             </div>
             {moods.includes(AUTRE) && (
-              <input className="field max-w-[360px] py-2.5 text-[15px]" type="text" placeholder="Votre mot à vous" value={moodOther} onChange={(e) => setMoodOther(e.target.value)} />
+              <input className="field max-w-[360px] py-2.5 text-[15px]" type="text" placeholder="Votre mot à vous" aria-label="Votre ambiance, en un mot" value={moodOther} onChange={(e) => setMoodOther(e.target.value)} />
             )}
             <p className="text-[13px] leading-[1.45] text-(--fg-muted)">
               Des teintes ou matières en tête ?{' '}
@@ -298,9 +336,9 @@ export default function ProjetForm(props: ProjetFormProps) {
           <fieldset className="flex flex-col gap-4">
             <legend className="contents">{etape(photo_activee ? '04' : '03', 'Coordonnées')}</legend>
             <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-[18px]">
-              <input id={`${formId}-nom`} className="field" required type="text" autoComplete="name" placeholder="Prénom et nom" aria-label="Prénom et nom" value={name} onChange={(e) => setName(e.target.value)} />
-              <input id={`${formId}-tel`} className="field" required type="tel" autoComplete="tel" placeholder="Téléphone" aria-label="Téléphone" value={phone} onChange={(e) => setPhone(e.target.value)} />
-              <input id={`${formId}-email`} className="field" required type="email" autoComplete="email" placeholder="Email" aria-label="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+              {champ('nom', 'Prénom et nom', { required: true, type: 'text', autoComplete: 'name', value: name, onChange: (e) => { setName(e.target.value); clearError('nom') } })}
+              {champ('tel', 'Téléphone', { required: true, type: 'tel', autoComplete: 'tel', inputMode: 'tel', value: phone, onChange: (e) => { setPhone(e.target.value); clearError('tel') } })}
+              {champ('email', 'E-mail', { required: true, type: 'email', autoComplete: 'email', inputMode: 'email', value: email, onChange: (e) => { setEmail(e.target.value); clearError('email') } })}
             </div>
           </fieldset>
 
@@ -313,7 +351,7 @@ export default function ProjetForm(props: ProjetFormProps) {
             <button
               type="submit"
               disabled={sending}
-              className="inline-flex cursor-pointer items-center justify-between gap-4 rounded-mk bg-bordeaux px-6 py-[18px] text-xs uppercase tracking-[.14em] text-creme transition-[background-color,translate] duration-300 hover:-translate-y-0.5 hover:bg-bordeaux-2 disabled:cursor-wait disabled:opacity-60"
+              className="inline-flex cursor-pointer items-center justify-between gap-4 rounded-mk bg-bordeaux px-6 py-[18px] text-sm uppercase tracking-[.14em] text-creme transition-[background-color,translate] duration-300 hover:-translate-y-0.5 hover:bg-bordeaux-2 disabled:cursor-wait disabled:opacity-60"
             >
               <span>{sending ? 'Envoi…' : label_envoi || 'Envoyer'}</span>
               <span aria-hidden="true" className="text-lg leading-none">→</span>

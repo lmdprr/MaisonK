@@ -21,10 +21,13 @@ export type FormulaireProjetProps = Omit<ModuleFormulaireProjet, 'email_to'> & {
  * Page « Votre projet ». Composant serveur : résout le lien de confirmation
  * (qui peut valoir `whatsapp`) et transmet la configuration. Tout l'interactif
  * vit dans `ProjetForm`.
+ *
+ * La section ne masque pas son débordement : un `overflow-hidden` sur un
+ * ancêtre neutralise la colonne sticky du formulaire. Le décor se rogne lui-même.
  */
 export default function FormulaireProjet({ coordonnees, confirmation, ...rest }: FormulaireProjetProps) {
   return (
-    <Section module="formulaire_projet" fond="creme" padding="none" className="isolate overflow-hidden pt-section-sm pb-section">
+    <Section module="formulaire_projet" fond="creme" padding="none" className="isolate pt-section-sm pb-section">
       <Wall variant="seed" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" />
       <ProjetForm {...rest} confirmation={confirmation} confirmationLien={resolveLien(confirmation.lien, coordonnees)} />
     </Section>
